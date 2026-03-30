@@ -267,7 +267,9 @@ button {
   height: 1.5rem;
   border-radius: 50% 50% 42% 42%;
   background: rgba(46, 91, 54, 0.24);
-  animation: trailFade 6s ease-in-out infinite;
+  opacity: 0.06;
+  filter: drop-shadow(0 0 0 rgba(170, 214, 128, 0));
+  animation: footprintStep 3.6s ease-in-out infinite;
 }
 
 .launch-footprint::before,
@@ -284,24 +286,55 @@ button {
     0.64rem -0.02rem 0 rgba(46, 91, 54, 0.24);
 }
 
-.footprint-one {
+.footprint-left-one,
+.footprint-right-one {
+  animation-delay: 0s;
+}
+
+.footprint-left-two,
+.footprint-right-two {
+  animation-delay: 1.2s;
+}
+
+.footprint-left-three,
+.footprint-right-three {
+  animation-delay: 2.4s;
+}
+
+.footprint-left-one {
   left: 9%;
   bottom: 15%;
   transform: rotate(-26deg);
 }
 
-.footprint-two {
+.footprint-left-two {
   left: 13%;
   bottom: 24%;
   transform: rotate(-16deg) scale(0.94);
-  animation-delay: 900ms;
 }
 
-.footprint-three {
+.footprint-left-three {
   left: 18%;
   bottom: 33%;
   transform: rotate(-8deg) scale(0.88);
-  animation-delay: 1800ms;
+}
+
+.footprint-right-one {
+  right: 9%;
+  bottom: 15%;
+  transform: rotate(26deg);
+}
+
+.footprint-right-two {
+  right: 13%;
+  bottom: 24%;
+  transform: rotate(16deg) scale(0.94);
+}
+
+.footprint-right-three {
+  right: 18%;
+  bottom: 33%;
+  transform: rotate(8deg) scale(0.88);
 }
 
 .launch-map-accent {
@@ -1077,14 +1110,22 @@ button {
   }
 }
 
-@keyframes trailFade {
+@keyframes footprintStep {
   0%,
   100% {
-    opacity: 0.28;
+    opacity: 0.06;
+    filter: drop-shadow(0 0 0 rgba(170, 214, 128, 0));
   }
 
-  50% {
+  10%,
+  20% {
     opacity: 0.7;
+    filter: drop-shadow(0 0 12px rgba(170, 214, 128, 0.18));
+  }
+
+  32% {
+    opacity: 0.16;
+    filter: drop-shadow(0 0 3px rgba(170, 214, 128, 0.08));
   }
 }
 
@@ -1336,6 +1377,36 @@ button {
     height: 1.32rem;
   }
 
+  .footprint-left-one {
+    left: 4%;
+    bottom: 16%;
+  }
+
+  .footprint-left-two {
+    left: 7%;
+    bottom: 24%;
+  }
+
+  .footprint-left-three {
+    left: 11%;
+    bottom: 32%;
+  }
+
+  .footprint-right-one {
+    right: 4%;
+    bottom: 16%;
+  }
+
+  .footprint-right-two {
+    right: 7%;
+    bottom: 24%;
+  }
+
+  .footprint-right-three {
+    right: 11%;
+    bottom: 32%;
+  }
+
   .launch-screen .primary-button {
     min-width: min(20rem, calc(100vw - 2rem));
   }
@@ -1535,18 +1606,33 @@ button {
     height: 1.14rem;
   }
 
-  .footprint-one {
-    left: 3%;
+  .footprint-left-one {
+    left: -1%;
     bottom: 15%;
   }
 
-  .footprint-two {
-    left: 6%;
+  .footprint-left-two {
+    left: 2%;
     bottom: 23%;
   }
 
-  .footprint-three {
-    left: 9%;
+  .footprint-left-three {
+    left: 5%;
+    bottom: 31%;
+  }
+
+  .footprint-right-one {
+    right: -1%;
+    bottom: 15%;
+  }
+
+  .footprint-right-two {
+    right: 2%;
+    bottom: 23%;
+  }
+
+  .footprint-right-three {
+    right: 5%;
     bottom: 31%;
   }
 
