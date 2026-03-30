@@ -137,9 +137,17 @@
             aria-labelledby="panel-title"
           >
             <div class="panel-head">
-              <div>
-                <p class="eyebrow" id="panel-kicker">Animal Friend</p>
-                <h2 id="panel-title">Ellie the Elephant</h2>
+              <div class="panel-head-main">
+                <div id="panel-avatar" class="panel-avatar" aria-hidden="true">
+                  🐘
+                </div>
+                <div class="panel-head-copy">
+                  <p class="eyebrow" id="panel-kicker">Safari Chat</p>
+                  <h2 id="panel-title">Ellie the Elephant</h2>
+                  <p id="panel-intro" class="panel-intro">
+                    Hi Explorer! I'm Ellie 🐘
+                  </p>
+                </div>
               </div>
               <button
                 id="close-panel"
@@ -151,10 +159,17 @@
               </button>
             </div>
 
-            <div id="interaction-buttons" class="interaction-buttons"></div>
+            <div
+              id="chat-feed"
+              class="chat-feed"
+              role="log"
+              aria-live="polite"
+              aria-label="Animal chat"
+            ></div>
 
-            <div id="response-area" class="response-area">
-              Tap a button to learn about this animal.
+            <div class="action-area">
+              <p class="action-area-label">Choose an action</p>
+              <div id="interaction-buttons" class="interaction-buttons"></div>
             </div>
           </section>
         </div>

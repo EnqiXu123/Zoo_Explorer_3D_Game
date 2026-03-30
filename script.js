@@ -46,26 +46,26 @@ const animals = [
       {
         id: "hello",
         label: "Say Hello",
-        response: "Ellie flaps her ears and waves her trunk hello.",
+        response: "Hi Explorer! My trunk says hello with a big swish.",
         learning: false,
       },
       {
         id: "trunk",
         label: "What can you do with your trunk?",
         response:
-          "An elephant uses its trunk to smell, breathe, grab food, and splash water.",
+          "My trunk is super handy. I use it to smell, grab food, and splash water.",
         learning: true,
       },
       {
         id: "food",
         label: "What do you eat?",
-        response: "Ellie eats plants like grass, leaves, bark, and fruit.",
+        response: "I love munching plants like grass, leaves, bark, and juicy fruit.",
         learning: true,
       },
       {
         id: "fact",
         label: "Fun Fact",
-        response: "Ellie can use her trunk like a giant straw to drink water.",
+        response: "Fun fact: I can use my trunk like a giant straw to drink water.",
         learning: true,
       },
     ],
@@ -85,25 +85,25 @@ const animals = [
       {
         id: "hello",
         label: "Say Hello",
-        response: "Leo gives a brave roar and swishes his tail.",
+        response: "Hello, Explorer! I give a proud roar and a calm tail swish.",
         learning: false,
       },
       {
         id: "home",
         label: "Where do you live?",
-        response: "Lions live in grasslands and open woodlands, mostly in Africa.",
+        response: "I live in sunny grasslands and open woodlands, mostly in Africa.",
         learning: true,
       },
       {
         id: "pride",
         label: "What is a pride?",
-        response: "A pride is a lion family that rests, protects cubs, and hunts together.",
+        response: "A pride is a lion family. We rest, protect cubs, and work together.",
         learning: true,
       },
       {
         id: "fact",
         label: "Fun Fact",
-        response: "Leo's roar can travel far across the savanna.",
+        response: "Fun fact: my roar can travel far across the savanna.",
         learning: true,
       },
     ],
@@ -124,10 +124,12 @@ const ui = {
   joystickArea: document.querySelector("#joystick-area"),
   joystickKnob: document.querySelector("#joystick-knob"),
   panelBackdrop: document.querySelector("#panel-backdrop"),
+  panelAvatar: document.querySelector("#panel-avatar"),
   panelTitle: document.querySelector("#panel-title"),
   panelKicker: document.querySelector("#panel-kicker"),
+  panelIntro: document.querySelector("#panel-intro"),
+  chatFeed: document.querySelector("#chat-feed"),
   interactionButtons: document.querySelector("#interaction-buttons"),
-  responseArea: document.querySelector("#response-area"),
   closePanel: document.querySelector("#close-panel"),
   popupBackdrop: document.querySelector("#popup-backdrop"),
   rewardPopup: document.querySelector("#reward-popup"),
@@ -151,7 +153,9 @@ const state = {
   pendingCompletion: false,
   activePopup: null,
   popupTimer: null,
+  chatTimer: null,
   playerMoving: false,
+  panelBusy: false,
   keyboard: {
     forward: false,
     back: false,
@@ -195,6 +199,61 @@ const runtime = {
   tempVector3: new THREE.Vector3(),
   targetCameraPosition: new THREE.Vector3(),
   targetLookTarget: new THREE.Vector3(),
+};
+
+const ACTION_CARD_META = {
+  elephant: {
+    hello: {
+      icon: "👋",
+      title: "Say hello",
+      note: "Wave to Ellie",
+      prompt: "Hi Ellie!",
+    },
+    trunk: {
+      icon: "🌀",
+      title: "Ask about trunk",
+      note: "What can it do?",
+      prompt: "What can your trunk do?",
+    },
+    food: {
+      icon: "🍉",
+      title: "Feed Ellie",
+      note: "Ask about snacks",
+      prompt: "What do you like to eat?",
+    },
+    fact: {
+      icon: "✨",
+      title: "Fun fact",
+      note: "Tell me something wow",
+      prompt: "Tell me a fun fact!",
+    },
+  },
+  lion: {
+    hello: {
+      icon: "👋",
+      title: "Say hello",
+      note: "Wave to Leo",
+      prompt: "Hi Leo!",
+    },
+    home: {
+      icon: "🌍",
+      title: "Lion home",
+      note: "Where do you live?",
+      prompt: "Where do you live, Leo?",
+    },
+    pride: {
+      icon: "🐾",
+      title: "Ask about pride",
+      note: "What is a pride?",
+      prompt: "What is a pride?",
+    },
+    fact: {
+      icon: "✨",
+      title: "Fun fact",
+      note: "Tell me something wow",
+      prompt: "Tell me a fun fact!",
+    },
+  },
 };
 
 init();
@@ -953,22 +1012,20 @@ function findAnimalIdFromObject(object) {
 }
 
 function openAnimalPanel(animal) {
+  clearChatTimer();
+  state.panelBusy = false;
   state.currentAnimalId = animal.id;
   state.gameState = GAME_STATES.INTERACTING;
 
-  ui.panelTitle.textContent = `${animal.emoji} ${animal.name} the ${animal.species}`;
-  ui.panelKicker.textContent = `${animal.name}'s Questions`;
-  ui.responseArea.textContent = `Choose a button to learn one cool thing about ${animal.name}.`;
-  ui.interactionButtons.innerHTML = "";
-
-  animal.interactions.forEach((interaction) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = `interaction-button${interaction.learning ? " is-learning" : ""}`;
-    button.textContent = interaction.label;
-    button.addEventListener("click", () => handleInteraction(animal, interaction));
-    ui.interactionButtons.appendChild(button);
+  ui.panelAvatar.textContent = animal.emoji;
+  ui.panelTitle.textContent = `${animal.name} the ${animal.species}`;
+  ui.panelKicker.textContent = "Safari Chat";
+  ui.panelIntro.textContent = `Hi Explorer! I'm ${animal.name} ${animal.emoji}`;
+  ui.chatFeed.innerHTML = "";
+  appendChatMessage("animal", `Pick a card and I'll share something cool about being a ${animal.species.toLowerCase()}.`, {
+    animal,
   });
+  renderInteractionActions(animal);
 
   ui.panelBackdrop.classList.remove("hidden");
 }
@@ -978,6 +1035,8 @@ function closeAnimalPanel() {
     return;
   }
 
+  clearChatTimer();
+  state.panelBusy = false;
   state.currentAnimalId = null;
   ui.panelBackdrop.classList.add("hidden");
 
@@ -987,22 +1046,167 @@ function closeAnimalPanel() {
 }
 
 function handleInteraction(animal, interaction) {
-  ui.responseArea.textContent = interaction.response;
-
-  if (!interaction.learning || animal.learned) {
+  if (state.panelBusy || state.currentAnimalId !== animal.id) {
     return;
   }
 
-  animal.learned = true;
-  state.learnedAnimals.add(animal.id);
+  const actionMeta = getInteractionCardMeta(animal, interaction);
+  const shouldUnlockFact = interaction.learning && !animal.learned;
+  state.panelBusy = true;
+  renderInteractionActions(animal);
 
-  if (state.learnedAnimals.size === animals.length && !state.hasCompleted) {
-    state.pendingCompletion = true;
-    state.hasCompleted = true;
+  appendChatMessage("explorer", actionMeta.prompt, { animal });
+  const typingBubble = appendTypingMessage(animal);
+  const panelAnimalId = animal.id;
+
+  state.chatTimer = window.setTimeout(() => {
+    state.chatTimer = null;
+
+    if (state.currentAnimalId !== panelAnimalId) {
+      return;
+    }
+
+    typingBubble.remove();
+    appendChatMessage("animal", interaction.response, { animal });
+
+    if (shouldUnlockFact) {
+      appendChatBadge("You learned something new!");
+      animal.learned = true;
+      state.learnedAnimals.add(animal.id);
+
+      if (state.learnedAnimals.size === animals.length && !state.hasCompleted) {
+        state.pendingCompletion = true;
+        state.hasCompleted = true;
+      }
+
+      updateProgress();
+      showRewardPopup(animal);
+    }
+
+    state.panelBusy = false;
+    renderInteractionActions(animal);
+  }, 380);
+}
+
+function renderInteractionActions(animal) {
+  ui.interactionButtons.innerHTML = "";
+
+  animal.interactions.forEach((interaction) => {
+    const actionMeta = getInteractionCardMeta(animal, interaction);
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = `interaction-button action-card${interaction.learning ? " is-learning" : ""}`;
+    button.disabled = state.panelBusy;
+    button.setAttribute("aria-label", actionMeta.title);
+    button.addEventListener("click", () => handleInteraction(animal, interaction));
+
+    const icon = document.createElement("span");
+    icon.className = "action-card-icon";
+    icon.textContent = actionMeta.icon;
+
+    const text = document.createElement("span");
+    text.className = "action-card-text";
+
+    const title = document.createElement("span");
+    title.className = "action-card-title";
+    title.textContent = actionMeta.title;
+
+    const note = document.createElement("span");
+    note.className = "action-card-note";
+    note.textContent = actionMeta.note;
+
+    text.append(title, note);
+    button.append(icon, text);
+    ui.interactionButtons.appendChild(button);
+  });
+}
+
+function getInteractionCardMeta(animal, interaction) {
+  return (
+    ACTION_CARD_META[animal.id]?.[interaction.id] ?? {
+      icon: "✨",
+      title: interaction.label,
+      note: "Tap to chat",
+      prompt: interaction.label,
+    }
+  );
+}
+
+function appendChatMessage(role, text, { animal } = {}) {
+  const message = document.createElement("div");
+  message.className = `chat-message chat-message-${role}`;
+
+  const avatar = document.createElement("div");
+  avatar.className = "chat-avatar";
+  avatar.textContent = role === "animal" ? animal?.emoji ?? "🐾" : "🧭";
+
+  const bubble = document.createElement("div");
+  bubble.className = "chat-bubble";
+
+  const speaker = document.createElement("p");
+  speaker.className = "chat-speaker";
+  speaker.textContent = role === "animal" ? animal?.name ?? "Animal" : "Explorer";
+
+  const copy = document.createElement("p");
+  copy.className = "chat-copy";
+  copy.textContent = text;
+
+  bubble.append(speaker, copy);
+
+  if (role === "explorer") {
+    message.append(bubble, avatar);
+  } else {
+    message.append(avatar, bubble);
   }
 
-  updateProgress();
-  showRewardPopup(animal);
+  ui.chatFeed.appendChild(message);
+  scrollChatFeedToBottom();
+  return message;
+}
+
+function appendTypingMessage(animal) {
+  const typing = document.createElement("div");
+  typing.className = "chat-message chat-message-animal chat-message-typing";
+
+  const avatar = document.createElement("div");
+  avatar.className = "chat-avatar";
+  avatar.textContent = animal.emoji;
+
+  const bubble = document.createElement("div");
+  bubble.className = "chat-bubble chat-bubble-typing";
+  bubble.innerHTML = `
+    <p class="chat-speaker">${animal.name}</p>
+    <div class="typing-dots" aria-label="${animal.name} is thinking">
+      <span></span><span></span><span></span>
+    </div>
+  `;
+
+  typing.append(avatar, bubble);
+  ui.chatFeed.appendChild(typing);
+  scrollChatFeedToBottom();
+  return typing;
+}
+
+function appendChatBadge(text) {
+  const badge = document.createElement("div");
+  badge.className = "chat-badge";
+  badge.textContent = text;
+  ui.chatFeed.appendChild(badge);
+  scrollChatFeedToBottom();
+  return badge;
+}
+
+function scrollChatFeedToBottom() {
+  ui.chatFeed.scrollTop = ui.chatFeed.scrollHeight;
+}
+
+function clearChatTimer() {
+  if (!state.chatTimer) {
+    return;
+  }
+
+  window.clearTimeout(state.chatTimer);
+  state.chatTimer = null;
 }
 
 function showRewardPopup(animal) {
