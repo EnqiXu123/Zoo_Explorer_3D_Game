@@ -29,6 +29,8 @@ const CAMERA_SMOOTHING = 8.5;
 const LOOK_SENSITIVITY = 0.005;
 const TOUCH_SENSITIVITY = 0.006;
 const JOYSTICK_RADIUS = 36;
+const DEFAULT_LOOK_YAW = 0;
+const DEFAULT_LOOK_PITCH = 0.38;
 
 const animals = [
   {
@@ -177,8 +179,8 @@ const state = {
     type: "mouse",
   },
   look: {
-    yaw: 0,
-    pitch: 0.46,
+    yaw: DEFAULT_LOOK_YAW,
+    pitch: DEFAULT_LOOK_PITCH,
   },
 };
 
@@ -447,7 +449,7 @@ function addSun() {
 
   // Keep the sun lower and slightly closer to the zoo so it stays visible in
   // the default camera framing.
-  sunGroup.position.set(-18, 16, -18);
+  sunGroup.position.set(-27, 12, -18);
   runtime.scene.add(sunGroup);
 }
 
