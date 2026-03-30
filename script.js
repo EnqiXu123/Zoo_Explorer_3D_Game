@@ -31,6 +31,7 @@ const TOUCH_SENSITIVITY = 0.006;
 const JOYSTICK_RADIUS = 36;
 const DEFAULT_LOOK_YAW = 0;
 const DEFAULT_LOOK_PITCH = 0.38;
+const ANIMAL_SOUND_VOLUME = 0.42;
 
 const animals = [
   {
@@ -162,6 +163,7 @@ const state = {
   chatTimer: null,
   playerMoving: false,
   panelBusy: false,
+  audioEnabled: true,
   keyboard: {
     forward: false,
     back: false,
@@ -205,6 +207,10 @@ const runtime = {
   tempVector3: new THREE.Vector3(),
   targetCameraPosition: new THREE.Vector3(),
   targetLookTarget: new THREE.Vector3(),
+  audio: {
+    currentCueId: null,
+    cues: new Map(),
+  },
 };
 
 const ACTION_CARD_META = {
@@ -268,6 +274,7 @@ function init() {
   runtime.timer.connect(document);
   buildScene();
   buildMinimap();
+  initAudio();
   bindEvents();
   updateTouchControls();
   updateProgress();
@@ -838,8 +845,78 @@ function bindEvents() {
     if (document.hidden) {
       resetJoystick();
       resetPointerDrag();
+      stopCurrentAnimalSound();
     }
   });
+}
+
+function initAudio() {
+  runtime.audio.cues.set(
+    "elephant",
+    createAnimalSoundCue("elephant", "Elephant sound.wav"),
+  );
+  runtime.audio.cues.set(
+    "lion",
+    createAnimalSoundCue("lion", "Lion sound.wav"),
+  );
+}
+
+function createAnimalSoundCue(id, fileName) {
+  const audio = new Audio(encodeURI(fileName));
+  audio.preload = "auto";
+  audio.volume = ANIMAL_SOUND_VOLUME;
+  return {
+    id,
+    audio,
+  };
+}
+
+function playAnimalSound(animalId) {
+  if (!state.audioEnabled) {
+    return;
+  }
+
+  const cue = runtime.audio.cues.get(animalId);
+  if (!cue) {
+    return;
+  }
+
+  if (
+    runtime.audio.currentCueId &&
+    runtime.audio.currentCueId !== animalId
+  ) {
+    stopCurrentAnimalSound();
+  }
+
+  runtime.audio.currentCueId = animalId;
+  cue.audio.pause();
+  cue.audio.currentTime = 0;
+
+  const playPromise = cue.audio.play();
+  if (playPromise && typeof playPromise.catch === "function") {
+    playPromise.catch(() => {
+      if (runtime.audio.currentCueId === animalId) {
+        runtime.audio.currentCueId = null;
+      }
+    });
+  }
+}
+
+function stopCurrentAnimalSound() {
+  const cueId = runtime.audio.currentCueId;
+  if (!cueId) {
+    return;
+  }
+
+  const cue = runtime.audio.cues.get(cueId);
+  runtime.audio.currentCueId = null;
+
+  if (!cue) {
+    return;
+  }
+
+  cue.audio.pause();
+  cue.audio.currentTime = 0;
 }
 
 function startGame() {
@@ -1063,6 +1140,7 @@ function tryInteractFromScreenPoint(clientX, clientY) {
 
   const animal = animals.find((entry) => entry.id === match);
   if (animal && isAnimalNearby(animal)) {
+    playAnimalSound(animal.id);
     openAnimalPanel(animal);
   }
 }
