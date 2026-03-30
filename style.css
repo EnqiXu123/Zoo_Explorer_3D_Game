@@ -88,16 +88,17 @@ button {
   position: absolute;
   inset: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(20rem, 0.92fr);
-  gap: clamp(1.75rem, 4vw, 3rem);
+  grid-template-columns: minmax(0, 1fr) minmax(21rem, 0.98fr);
+  gap: clamp(2rem, 4vw, 3.6rem);
   align-items: center;
-  padding: clamp(1.5rem, 4vw, 3rem);
+  padding: clamp(1.2rem, 4vw, 3.1rem);
   pointer-events: auto;
   overflow: hidden;
   background:
-    radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.72), transparent 22%),
-    radial-gradient(circle at 82% 22%, rgba(255, 255, 255, 0.58), transparent 18%),
-    linear-gradient(135deg, #72ddff 0%, #9ee483 52%, #ffe66f 100%);
+    radial-gradient(circle at 16% 18%, rgba(255, 255, 255, 0.78), transparent 19%),
+    radial-gradient(circle at 84% 16%, rgba(255, 255, 255, 0.62), transparent 18%),
+    radial-gradient(circle at 50% 110%, rgba(255, 238, 122, 0.62), transparent 30%),
+    linear-gradient(140deg, #89e8ff 0%, #86d6ff 23%, #92ebaa 54%, #ffe978 100%);
   transition:
     opacity 260ms ease,
     transform 260ms ease;
@@ -114,19 +115,19 @@ button {
 }
 
 .launch-screen::before {
-  width: 34rem;
-  height: 34rem;
-  right: -7rem;
-  top: -11rem;
-  background: rgba(255, 255, 255, 0.22);
+  width: 38rem;
+  height: 38rem;
+  right: -9rem;
+  top: -14rem;
+  background: rgba(255, 255, 255, 0.19);
 }
 
 .launch-screen::after {
-  width: 28rem;
-  height: 28rem;
-  left: -8rem;
-  bottom: -12rem;
-  background: rgba(255, 255, 255, 0.18);
+  width: 31rem;
+  height: 31rem;
+  left: -10rem;
+  bottom: -14rem;
+  background: rgba(255, 255, 255, 0.16);
 }
 
 .launch-screen.is-exiting {
@@ -149,95 +150,149 @@ button {
   align-items: center;
   gap: 0.45rem;
   margin: 0 0 1rem;
-  padding: 0.55rem 0.95rem;
+  padding: 0.65rem 1.05rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.72);
-  font-size: 0.82rem;
+  background: rgba(255, 248, 212, 0.94);
+  border: 1px solid rgba(22, 66, 59, 0.08);
+  font-family: "Marker Felt", "Trebuchet MS", "Avenir Next", sans-serif;
+  font-size: 0.9rem;
   font-weight: 800;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #256059;
-  box-shadow: 0 14px 24px rgba(37, 96, 89, 0.12);
+  color: #216053;
+  box-shadow: 0 14px 26px rgba(37, 96, 89, 0.12);
 }
 
 .launch-copy h1 {
   margin: 0;
-  font-size: clamp(3.2rem, 9vw, 6.4rem);
-  line-height: 0.9;
-  letter-spacing: -0.04em;
-  color: #16423b;
+  font-family: "Marker Felt", "Trebuchet MS", "Avenir Next", sans-serif;
+  font-size: clamp(3.35rem, 9vw, 6.6rem);
+  line-height: 0.88;
+  letter-spacing: -0.045em;
+  color: #133e38;
+  text-shadow: 0 6px 0 rgba(255, 248, 212, 0.58);
   text-wrap: balance;
 }
 
 .launch-subtitle {
-  margin: 1.2rem 0 0;
+  margin: 1.15rem 0 0;
   max-width: 31rem;
-  font-size: clamp(1.02rem, 2.5vw, 1.28rem);
-  line-height: 1.55;
-  color: rgba(22, 66, 59, 0.82);
+  font-size: clamp(1.02rem, 2.5vw, 1.22rem);
+  line-height: 1.58;
+  color: rgba(19, 62, 56, 0.82);
 }
 
-.launch-pills {
-  display: flex;
-  flex-wrap: wrap;
+.launch-quest-card {
+  display: grid;
   gap: 0.75rem;
-  margin: 1.5rem 0 0;
+  margin-top: 1.6rem;
+  padding: 1rem;
+  border-radius: 1.9rem;
+  background: rgba(255, 250, 232, 0.9);
+  border: 1px solid rgba(22, 66, 59, 0.08);
+  box-shadow:
+    0 20px 34px rgba(33, 67, 54, 0.12),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.34);
 }
 
-.launch-pills span {
-  padding: 0.7rem 1rem;
-  border-radius: 999px;
-  background: rgba(255, 249, 233, 0.86);
-  border: 1px solid rgba(22, 66, 59, 0.08);
-  box-shadow: 0 10px 20px rgba(37, 67, 54, 0.12);
-  font-weight: 700;
+.quest-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.85rem;
+  align-items: start;
+  padding: 0.9rem 0.95rem;
+  border-radius: 1.2rem;
+  border: 1px solid rgba(22, 66, 59, 0.06);
+}
+
+.quest-row-sky {
+  background: linear-gradient(135deg, rgba(132, 227, 255, 0.45), rgba(255, 255, 255, 0.8));
+}
+
+.quest-row-sun {
+  background: linear-gradient(135deg, rgba(255, 224, 106, 0.55), rgba(255, 255, 255, 0.84));
+}
+
+.quest-row-leaf {
+  background: linear-gradient(135deg, rgba(146, 235, 170, 0.55), rgba(255, 255, 255, 0.84));
+}
+
+.quest-number {
+  display: grid;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  background: #ff8a49;
+  color: #fffaf0;
+  font-family: "Marker Felt", "Trebuchet MS", sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  box-shadow: 0 8px 14px rgba(227, 107, 44, 0.2);
+}
+
+.quest-title {
+  display: block;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #16423b;
+}
+
+.quest-copy {
+  display: block;
+  margin-top: 0.22rem;
+  font-size: 0.94rem;
+  line-height: 1.4;
+  color: rgba(22, 66, 59, 0.76);
 }
 
 .launch-actions {
   display: grid;
-  gap: 0.9rem;
+  gap: 0.95rem;
   justify-items: start;
-  margin-top: 1.7rem;
+  margin-top: 1.5rem;
 }
 
 .launch-note {
   margin: 0;
-  max-width: 22rem;
-  font-size: 0.98rem;
-  line-height: 1.45;
+  max-width: 24rem;
+  font-size: 0.96rem;
+  line-height: 1.48;
   color: rgba(22, 66, 59, 0.74);
 }
 
-.launch-art {
+.launch-stage {
+  position: relative;
   display: grid;
-  place-items: center;
-  padding: 2.5rem 1.4rem 1rem;
+  justify-items: center;
+  padding: 2rem 1rem 1rem;
   overflow: visible;
 }
 
-.explorer-card {
+.launch-stage-card {
   position: relative;
-  width: min(100%, 32rem);
-  padding: 1.2rem;
-  border-radius: 2.2rem;
+  width: min(100%, 32.5rem);
+  padding: 1rem;
+  border-radius: 2.35rem;
   background:
-    linear-gradient(180deg, rgba(255, 252, 241, 0.94), rgba(255, 242, 204, 0.88)),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.32), transparent 65%);
+    linear-gradient(180deg, rgba(255, 251, 240, 0.95), rgba(255, 237, 188, 0.88)),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.38), transparent 65%);
   border: 1px solid rgba(255, 255, 255, 0.46);
   box-shadow:
-    0 24px 42px rgba(33, 67, 54, 0.18),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+    0 28px 46px rgba(33, 67, 54, 0.2),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.42);
   z-index: 1;
+  animation: stage-float 3.4s ease-in-out infinite;
 }
 
-.explorer-card::before {
+.launch-stage-card::before {
   content: "";
   position: absolute;
-  inset: 1rem;
-  border-radius: 1.6rem;
+  inset: 0.95rem;
+  border-radius: 1.65rem;
   background:
-    radial-gradient(circle at top, rgba(125, 226, 255, 0.55), transparent 46%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.08));
+    radial-gradient(circle at top, rgba(125, 226, 255, 0.58), transparent 42%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.1));
   pointer-events: none;
 }
 
@@ -246,12 +301,46 @@ button {
   display: block;
   width: 100%;
   height: auto;
-  animation: explorer-bounce 2.8s ease-in-out infinite;
+  z-index: 1;
 }
 
-.launch-sticker {
+.spark {
   position: absolute;
-  padding: 0.72rem 1rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  background: #fff9c3;
+  clip-path: polygon(50% 0%, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0% 50%, 38% 38%);
+  filter: drop-shadow(0 4px 8px rgba(255, 244, 156, 0.55));
+  z-index: 2;
+  animation: sparkle-twinkle 1.8s ease-in-out infinite;
+}
+
+.spark-a {
+  top: 1.25rem;
+  left: 1.4rem;
+}
+
+.spark-b {
+  top: 3.8rem;
+  right: 1.6rem;
+  animation-delay: 300ms;
+}
+
+.spark-c {
+  bottom: 4.8rem;
+  left: 2.4rem;
+  animation-delay: 550ms;
+}
+
+.spark-d {
+  bottom: 2rem;
+  right: 3rem;
+  animation-delay: 850ms;
+}
+
+.launch-badge {
+  position: absolute;
+  padding: 0.78rem 1.08rem;
   border-radius: 999px;
   font-size: 0.92rem;
   font-weight: 800;
@@ -261,30 +350,45 @@ button {
   white-space: nowrap;
 }
 
-.sticker-sun {
-  top: 0.35rem;
-  right: -0.2rem;
-  background: #fff5af;
-  transform: rotate(6deg);
+.badge-top {
+  top: 0;
+  right: 0.1rem;
+  background: #fff2a1;
+  transform: rotate(7deg);
 }
 
-.sticker-map {
-  left: -0.3rem;
-  bottom: 7.4rem;
-  background: #ffcde3;
+.badge-bottom {
+  left: -0.15rem;
+  bottom: 7.2rem;
+  background: #ffc8e1;
   transform: rotate(-7deg);
 }
 
-.launch-question {
+.launch-question-card {
   margin-top: 1rem;
-  padding: 0.9rem 1.1rem;
-  border-radius: 1.35rem;
-  background: rgba(255, 249, 233, 0.88);
+  width: min(100%, 24rem);
+  padding: 1rem 1.15rem;
+  border-radius: 1.5rem;
+  background: rgba(255, 249, 233, 0.92);
   border: 1px solid rgba(22, 66, 59, 0.08);
   box-shadow: 0 14px 24px rgba(33, 67, 54, 0.12);
-  font-size: 1.02rem;
-  font-weight: 700;
+  text-align: center;
   color: #245248;
+}
+
+.launch-question-card strong {
+  display: block;
+  font-family: "Marker Felt", "Trebuchet MS", sans-serif;
+  font-size: 1.2rem;
+  line-height: 1.2;
+}
+
+.launch-question-card span {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 0.96rem;
+  line-height: 1.4;
+  color: rgba(36, 82, 72, 0.78);
 }
 
 .eyebrow,
@@ -310,11 +414,20 @@ button {
 }
 
 .primary-button {
-  padding: 0.95rem 1.55rem;
+  padding: 1rem 1.65rem;
   color: #fffdf7;
   background: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
   box-shadow: 0 12px 24px rgba(227, 107, 44, 0.25);
   font-weight: 800;
+}
+
+.launch-screen .primary-button {
+  font-family: "Marker Felt", "Trebuchet MS", "Avenir Next", sans-serif;
+  font-size: 1.12rem;
+  letter-spacing: 0.01em;
+  box-shadow:
+    0 14px 0 rgba(175, 83, 34, 0.22),
+    0 20px 28px rgba(227, 107, 44, 0.24);
 }
 
 .ghost-button {
@@ -619,6 +732,30 @@ button {
   }
 }
 
+@keyframes stage-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes sparkle-twinkle {
+  0%,
+  100% {
+    transform: scale(0.85);
+    opacity: 0.7;
+  }
+
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+}
+
 @keyframes pop-in {
   from {
     opacity: 0;
@@ -657,7 +794,8 @@ button {
   .launch-screen {
     grid-template-columns: 1fr;
     align-items: start;
-    padding: 1.25rem 1rem 1.5rem;
+    gap: 1.4rem;
+    padding: 1.1rem 1rem 1.45rem;
   }
 
   .launch-copy {
@@ -672,23 +810,31 @@ button {
     max-width: none;
   }
 
+  .launch-quest-card {
+    padding: 0.85rem;
+  }
+
   .launch-actions {
     justify-items: stretch;
   }
 
-  .explorer-card {
+  .launch-stage {
+    padding: 1.2rem 0.5rem 0.4rem;
+  }
+
+  .launch-stage-card {
     width: min(100%, 27rem);
     padding: 0.95rem;
   }
 
-  .sticker-sun {
-    top: 0.15rem;
-    right: 0.1rem;
+  .badge-top {
+    top: -0.2rem;
+    right: 0.3rem;
   }
 
-  .sticker-map {
-    left: 0.15rem;
-    bottom: 6.2rem;
+  .badge-bottom {
+    left: 0.4rem;
+    bottom: 5.7rem;
   }
 
   #progress-card {
@@ -746,11 +892,7 @@ button {
 
 @media (max-width: 520px) {
   .launch-screen {
-    padding: 1rem 0.85rem 1.3rem;
-  }
-
-  .launch-art {
-    padding: 2.1rem 0.6rem 0.8rem;
+    padding: 0.95rem 0.8rem 1.2rem;
   }
 
   .launch-tag {
@@ -758,25 +900,45 @@ button {
     font-size: 0.74rem;
   }
 
-  .launch-pills {
-    gap: 0.55rem;
+  .quest-row {
+    gap: 0.7rem;
+    padding: 0.82rem 0.8rem;
   }
 
-  .launch-pills span {
-    padding: 0.58rem 0.82rem;
+  .quest-number {
+    width: 2rem;
+    height: 2rem;
+    font-size: 1rem;
+  }
+
+  .quest-copy {
     font-size: 0.9rem;
   }
 
-  .launch-question {
-    width: 100%;
-    text-align: center;
-    font-size: 0.96rem;
+  .launch-stage {
+    padding: 0.95rem 0.25rem 0.2rem;
   }
 
-  .sticker-sun,
-  .sticker-map {
+  .launch-question-card {
+    width: 100%;
+  }
+
+  .launch-question-card strong {
+    font-size: 1.08rem;
+  }
+
+  .launch-badge {
     font-size: 0.82rem;
     padding: 0.62rem 0.84rem;
+  }
+
+  .badge-top {
+    right: 0.2rem;
+  }
+
+  .badge-bottom {
+    left: 0.2rem;
+    bottom: 5rem;
   }
 
   #progress-card {
