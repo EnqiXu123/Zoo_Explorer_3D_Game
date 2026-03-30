@@ -157,6 +157,8 @@ button {
 
 .map-compass,
 .map-path,
+.map-marker,
+.map-stamp,
 .footprint {
   position: absolute;
   color: #285540;
@@ -169,6 +171,19 @@ button {
   aspect-ratio: 1;
   border: 4px solid currentColor;
   border-radius: 50%;
+}
+
+.compass-large {
+  top: 10%;
+  left: 8%;
+  width: 5rem;
+}
+
+.compass-small {
+  right: 12%;
+  bottom: 24%;
+  width: 3.8rem;
+  border-width: 3px;
 }
 
 .map-compass::before {
@@ -192,6 +207,18 @@ button {
   transform: translateX(-50%);
 }
 
+.compass-small::before {
+  inset: 0.7rem;
+  border-top-width: 3px;
+  border-bottom-width: 3px;
+}
+
+.compass-small::after {
+  top: 0.55rem;
+  width: 0.72rem;
+  height: 1.45rem;
+}
+
 .map-path {
   top: 23%;
   right: 8%;
@@ -201,6 +228,158 @@ button {
   border-right: 4px dashed currentColor;
   border-radius: 0 90% 75% 0 / 0 90% 95% 0;
   transform: rotate(10deg);
+}
+
+.path-one {
+  top: 23%;
+  right: 8%;
+  width: 14rem;
+  height: 8rem;
+  transform: rotate(10deg);
+}
+
+.path-two {
+  left: 10%;
+  top: 46%;
+  width: 10rem;
+  height: 6rem;
+  border-top: 3px dashed currentColor;
+  border-left: 3px dashed currentColor;
+  border-right: 0;
+  border-radius: 80% 0 0 85% / 85% 0 0 80%;
+  transform: rotate(-8deg);
+}
+
+.map-marker {
+  width: 1.6rem;
+  height: 1.6rem;
+}
+
+.marker-x::before,
+.marker-x::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  height: 0.18rem;
+  border-radius: 999px;
+  background: currentColor;
+  transform-origin: center;
+}
+
+.marker-x::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.marker-x::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.marker-ring {
+  border: 3px solid currentColor;
+  border-radius: 50%;
+}
+
+.marker-ring::after {
+  content: "";
+  position: absolute;
+  inset: 0.35rem;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+}
+
+.marker-a {
+  right: 21%;
+  top: 33%;
+}
+
+.marker-b {
+  left: 14%;
+  bottom: 28%;
+}
+
+.marker-c {
+  left: 20%;
+  top: 20%;
+}
+
+.marker-d {
+  right: 28%;
+  bottom: 18%;
+}
+
+.map-stamp {
+  opacity: 0.82;
+}
+
+.stamp-binoculars {
+  right: 26%;
+  top: 12%;
+  width: 3.4rem;
+  height: 1.8rem;
+}
+
+.stamp-binoculars::before,
+.stamp-binoculars::after {
+  content: "";
+  position: absolute;
+  top: 0.25rem;
+  width: 1.15rem;
+  height: 1.15rem;
+  border: 3px solid currentColor;
+  border-radius: 50%;
+}
+
+.stamp-binoculars::before {
+  left: 0.25rem;
+}
+
+.stamp-binoculars::after {
+  right: 0.25rem;
+}
+
+.stamp-binoculars span {
+  display: none;
+}
+
+.stamp-binoculars {
+  background:
+    linear-gradient(currentColor, currentColor) center 0.7rem / 1.4rem 0.2rem no-repeat,
+    linear-gradient(currentColor, currentColor) center 1.18rem / 0.45rem 0.6rem no-repeat;
+}
+
+.stamp-paw {
+  left: 30%;
+  bottom: 12%;
+  width: 2.8rem;
+  height: 2.5rem;
+}
+
+.stamp-paw::before,
+.stamp-paw::after {
+  content: "";
+  position: absolute;
+  background: currentColor;
+  border-radius: 50%;
+}
+
+.stamp-paw::before {
+  left: 0.85rem;
+  bottom: 0;
+  width: 1.1rem;
+  height: 1.35rem;
+}
+
+.stamp-paw::after {
+  left: 0.15rem;
+  top: 0.2rem;
+  width: 0.48rem;
+  height: 0.48rem;
+  box-shadow:
+    0.62rem -0.18rem 0 currentColor,
+    1.24rem -0.02rem 0 currentColor,
+    1.86rem 0.24rem 0 currentColor;
 }
 
 .footprint {
@@ -236,6 +415,18 @@ button {
   transform: rotate(-14deg) scale(0.95);
 }
 
+.footprint-c {
+  right: 17%;
+  top: 19%;
+  transform: rotate(18deg) scale(0.9);
+}
+
+.footprint-d {
+  right: 13%;
+  top: 25%;
+  transform: rotate(24deg) scale(0.82);
+}
+
 .launch-header {
   text-align: center;
   width: min(100%, 50rem);
@@ -244,6 +435,7 @@ button {
 .wood-sign {
   position: relative;
   display: inline-block;
+  max-width: min(100%, calc(100vw - 1.5rem));
   margin: 0;
   padding: 1rem 1.9rem 1.1rem;
   border-radius: 2rem;
@@ -300,7 +492,8 @@ button {
   display: grid;
   place-items: center;
   width: min(100%, 44rem);
-  min-height: min(46vh, 33rem);
+  min-height: min(50vh, 35rem);
+  padding-bottom: 7rem;
   margin-top: -0.4rem;
 }
 
@@ -312,6 +505,7 @@ button {
   background: radial-gradient(circle, rgba(255, 241, 150, 0.92) 0%, rgba(255, 197, 111, 0.55) 34%, rgba(163, 229, 134, 0.28) 56%, transparent 72%);
   filter: blur(8px);
   animation: glowPulse 4.4s ease-in-out infinite;
+  pointer-events: none;
 }
 
 .launch-hero-image {
@@ -327,6 +521,7 @@ button {
     0 10px 0 rgba(255, 255, 255, 0.28);
   animation: heroFloat 5.2s ease-in-out infinite;
   z-index: 3;
+  pointer-events: none;
 }
 
 .hero-leaf-corner {
@@ -335,6 +530,7 @@ button {
   width: 8.8rem;
   height: 6.5rem;
   z-index: 4;
+  pointer-events: none;
 }
 
 .corner-left {
@@ -391,6 +587,7 @@ button {
   position: absolute;
   z-index: 4;
   filter: drop-shadow(0 6px 10px rgba(48, 74, 44, 0.16));
+  pointer-events: none;
 }
 
 .hero-bird {
@@ -466,6 +663,7 @@ button {
     linear-gradient(180deg, #6bb34f 0%, #458d3b 100%);
   box-shadow: 0 10px 16px rgba(54, 94, 48, 0.12);
   z-index: 2;
+  pointer-events: none;
 }
 
 .bush-left {
@@ -477,27 +675,36 @@ button {
 }
 
 .launch-cta {
+  position: absolute;
+  left: 50%;
+  bottom: 1.9rem;
   display: grid;
   justify-items: center;
-  gap: 0.7rem;
+  gap: 0.55rem;
   text-align: center;
-  margin-top: -0.35rem;
+  width: min(100%, 24rem);
+  transform: translateX(-50%);
+  z-index: 6;
+  pointer-events: auto;
 }
 
 .launch-button-shell {
   position: relative;
   display: inline-grid;
   place-items: center;
+  animation: buttonPulse 2.5s ease-in-out infinite;
+  transform-origin: center;
 }
 
 .launch-button-shell::before {
   content: "";
   position: absolute;
-  inset: -0.35rem;
+  inset: -0.65rem;
   border-radius: 999px;
-  background: rgba(255, 194, 79, 0.28);
-  filter: blur(2px);
-  animation: buttonPulse 3.8s ease-in-out infinite;
+  background:
+    radial-gradient(circle, rgba(255, 211, 108, 0.5) 0%, rgba(255, 171, 71, 0.28) 55%, transparent 75%);
+  filter: blur(4px);
+  animation: buttonHalo 2.5s ease-in-out infinite;
   z-index: 0;
 }
 
@@ -599,8 +806,9 @@ button {
   position: relative;
   z-index: 1;
   font-family: "Marker Felt", "Trebuchet MS", "Avenir Next", sans-serif;
-  min-width: min(20rem, calc(100vw - 2rem));
-  font-size: clamp(1.12rem, 2.8vw, 1.4rem);
+  min-width: min(22rem, calc(100vw - 1.5rem));
+  padding: 1.1rem 2rem;
+  font-size: clamp(1.18rem, 3vw, 1.5rem);
   letter-spacing: 0.01em;
   background: linear-gradient(180deg, #ffc24f 0%, #f27f2a 100%);
   border: 3px solid rgba(122, 67, 24, 0.08);
@@ -609,15 +817,23 @@ button {
     0 20px 28px rgba(227, 107, 44, 0.24);
 }
 
+.launch-button-shell:hover,
+.launch-button-shell:focus-within {
+  animation-play-state: paused;
+}
+
+.launch-button-shell:hover::before,
+.launch-button-shell:focus-within::before {
+  animation-play-state: paused;
+}
+
 .launch-screen .primary-button:hover,
 .launch-screen .primary-button:focus-visible {
-  animation-play-state: paused;
   transform: translateY(-2px) scale(1.05);
   filter: brightness(1.06);
 }
 
 .launch-screen .primary-button:active {
-  animation-play-state: paused;
   transform: scale(0.97);
 }
 
@@ -1006,7 +1222,20 @@ button {
   }
 
   50% {
-    transform: scale(1.05);
+    transform: scale(1.1);
+  }
+}
+
+@keyframes buttonHalo {
+  0%,
+  100% {
+    transform: scale(0.94);
+    opacity: 0.6;
+  }
+
+  50% {
+    transform: scale(1.16);
+    opacity: 1;
   }
 }
 
@@ -1060,7 +1289,8 @@ button {
   }
 
   .launch-hero {
-    min-height: min(42vh, 25rem);
+    min-height: min(44vh, 26rem);
+    padding-bottom: 6.5rem;
   }
 
   .launch-hero-image {
@@ -1110,6 +1340,10 @@ button {
 
   .launch-secondary {
     font-size: 0.92rem;
+  }
+
+  .launch-cta {
+    bottom: 1.55rem;
   }
 
   #progress-card {
@@ -1165,6 +1399,16 @@ button {
   }
 }
 
+@media (max-height: 820px) and (min-width: 721px) {
+  .launch-hero {
+    padding-bottom: 6.2rem;
+  }
+
+  .launch-cta {
+    bottom: 0.95rem;
+  }
+}
+
 @media (max-width: 520px) {
   .launch-screen {
     gap: 0.85rem;
@@ -1172,11 +1416,13 @@ button {
   }
 
   .wood-sign {
+    max-width: calc(100vw - 1rem);
+    padding: 0.78rem 0.95rem 0.84rem;
     border-width: 5px;
     box-shadow:
       0 12px 0 rgba(127, 72, 31, 0.22),
       0 18px 24px rgba(83, 56, 27, 0.18);
-    font-size: clamp(1.85rem, 11vw, 2.8rem);
+    font-size: clamp(1.6rem, 8.8vw, 2.35rem);
   }
 
   .launch-subtitle {
@@ -1185,6 +1431,7 @@ button {
 
   .launch-hero {
     min-height: min(41vh, 21rem);
+    padding-bottom: 6rem;
   }
 
   .launch-hero-image {
@@ -1224,13 +1471,18 @@ button {
   }
 
   .launch-screen .primary-button {
-    min-width: min(100%, 17rem);
+    min-width: min(100%, 18rem);
     font-size: 1.16rem;
   }
 
   .launch-secondary {
     padding: 0.5rem 0.8rem;
     font-size: 0.88rem;
+  }
+
+  .launch-cta {
+    bottom: 1.25rem;
+    width: min(100%, 19rem);
   }
 
   #progress-card {
