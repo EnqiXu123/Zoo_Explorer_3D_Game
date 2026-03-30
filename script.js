@@ -622,7 +622,7 @@ function getAnimalSceneConfig(animalId) {
     return {
       createModel: createSceneElephant,
       labelBaseY: 4.7,
-      hintBaseY: 3.45,
+      hintBaseY: 4.7,
       hintBorder: "#7ea8c9",
       labelFloatAmplitude: 0.14,
       rootBobAmplitude: 0.02,
@@ -636,7 +636,7 @@ function getAnimalSceneConfig(animalId) {
     return {
       createModel: createSceneLion,
       labelBaseY: 4.15,
-      hintBaseY: 3.2,
+      hintBaseY: 4.15,
       hintBorder: "#db8a34",
       labelFloatAmplitude: 0.12,
       rootBobAmplitude: 0,
@@ -646,10 +646,10 @@ function getAnimalSceneConfig(animalId) {
     };
   }
 
-  return {
+    return {
     createModel: () => new THREE.Group(),
     labelBaseY: 4,
-    hintBaseY: 3.1,
+    hintBaseY: 4,
     hintBorder: "#7ea8c9",
     labelFloatAmplitude: 0.14,
     rootBobAmplitude: 0.04,
@@ -1257,14 +1257,19 @@ function updateAnimals(elapsed) {
       state.gameState === GAME_STATES.EXPLORING &&
       !state.activePopup &&
       !state.currentAnimalId;
-    object.hint.visible = shouldShowHint || object.proximityBlend > 0.03;
+
+    // Treat the animal label as a single shared bubble: either the default
+    // name card or the proximity prompt, never both at once.
+    object.label.visible = !shouldShowHint;
+    object.hint.visible = shouldShowHint;
+
     object.hint.position.y =
       object.hintBaseY +
       Math.sin(elapsed * 3 + object.bobOffset) * 0.09 +
       object.proximityBlend * 0.08;
     object.hint.material.opacity = shouldShowHint
-      ? THREE.MathUtils.clamp(0.2 + object.proximityBlend * 0.72, 0, 0.92)
-      : Math.max(0, object.hint.material.opacity * 0.86 - 0.02);
+      ? THREE.MathUtils.clamp(0.24 + object.proximityBlend * 0.68, 0, 0.92)
+      : 0;
     const hintScale = 1 + object.proximityBlend * 0.03;
     object.hint.scale.set(
       object.hintScaleX * hintScale,
