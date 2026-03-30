@@ -1,4 +1,8 @@
 import * as THREE from "three";
+import {
+  createLowPolyElephant,
+  updateElephantAnimation,
+} from "./low-poly-elephant.js";
 
 const GAME_STATES = {
   START: "START",
@@ -452,10 +456,14 @@ function addAnimals() {
       runtime.scene.add(post);
     }
 
-    const group =
-      animal.id === "elephant" ? createElephant(animal) : createLion(animal);
+    const group = new THREE.Group();
+    const model =
+      animal.id === "elephant"
+        ? createSceneElephant(animal)
+        : createLion(animal);
     group.position.set(animal.position.x, 0, animal.position.z);
     group.rotation.y = animal.rotationY;
+    group.add(model);
     group.add(createInteractionHitbox(animal.id));
     runtime.scene.add(group);
 
@@ -465,128 +473,50 @@ function addAnimals() {
       textColor: "#214336",
       fontSize: 42,
     });
-    label.position.set(0, 3.9, 0);
+    const labelBaseY = animal.id === "elephant" ? 4.7 : 3.9;
+    label.position.set(0, labelBaseY, 0);
     label.scale.set(4.2, 1.8, 1);
     group.add(label);
 
     runtime.animalObjects.set(animal.id, {
       root: group,
+      model,
       zone,
       label,
       highlight: 0,
       baseY: group.position.y,
+      labelBaseY,
       bobOffset: animal.id === "elephant" ? 0 : 1.6,
-      materials: collectMaterials(group),
+      animate: animal.id === "elephant" ? updateElephantAnimation : null,
+      materials: collectMaterials(model),
     });
   });
 }
 
 function createInteractionHitbox(animalId) {
-  const hitbox = new THREE.Mesh(
-    new THREE.SphereGeometry(2.6, 18, 18),
-    new THREE.MeshBasicMaterial({
-      transparent: true,
-      opacity: 0,
-      depthWrite: false,
-    }),
-  );
-  hitbox.position.set(0, 1.7, 0);
+  const material = new THREE.MeshBasicMaterial({
+    transparent: true,
+    opacity: 0,
+    depthWrite: false,
+  });
+  const hitbox =
+    animalId === "elephant"
+      ? new THREE.Mesh(new THREE.BoxGeometry(5.8, 4, 3.3), material)
+      : new THREE.Mesh(new THREE.SphereGeometry(2.6, 18, 18), material);
+
+  hitbox.position.set(0, animalId === "elephant" ? 1.95 : 1.7, 0);
   tagAnimal(hitbox, animalId);
   return hitbox;
 }
 
-function createElephant(animal) {
-  const group = new THREE.Group();
-  const skin = new THREE.MeshStandardMaterial({
-    color: 0x8baec8,
-    roughness: 0.82,
-    emissive: 0x21313d,
-    emissiveIntensity: 0.06,
-  });
-  const earMaterial = new THREE.MeshStandardMaterial({
-    color: 0x9dc0d9,
-    roughness: 0.85,
-    emissive: 0x21313d,
-    emissiveIntensity: 0.05,
-  });
-  const nailMaterial = new THREE.MeshStandardMaterial({
-    color: 0xeae4da,
-    roughness: 0.9,
-  });
+function createSceneElephant(animal) {
+  const elephant = createLowPolyElephant();
 
-  const body = new THREE.Mesh(
-    new THREE.BoxGeometry(3.2, 1.85, 2.1),
-    skin,
-  );
-  body.position.y = 1.45;
-  body.castShadow = true;
-  body.receiveShadow = true;
-  tagAnimal(body, animal.id);
-  group.add(body);
+  // The reusable helper faces +X; rotate it so the existing enclosure heading still applies.
+  elephant.rotation.y = Math.PI / 2;
+  tagAnimalHierarchy(elephant, animal.id);
 
-  const head = new THREE.Mesh(
-    new THREE.BoxGeometry(1.45, 1.4, 1.25),
-    skin,
-  );
-  head.position.set(0, 1.8, -1.5);
-  head.castShadow = true;
-  tagAnimal(head, animal.id);
-  group.add(head);
-
-  const trunk = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.24, 0.16, 1.65, 12),
-    skin,
-  );
-  trunk.position.set(0, 1.15, -2.35);
-  trunk.rotation.x = Math.PI / 2.5;
-  trunk.castShadow = true;
-  tagAnimal(trunk, animal.id);
-  group.add(trunk);
-
-  const leftEar = new THREE.Mesh(
-    new THREE.CircleGeometry(0.62, 20),
-    earMaterial,
-  );
-  leftEar.position.set(0.78, 1.92, -1.45);
-  leftEar.rotation.y = -Math.PI / 2.8;
-  tagAnimal(leftEar, animal.id);
-  group.add(leftEar);
-
-  const rightEar = leftEar.clone();
-  rightEar.position.x = -0.78;
-  rightEar.rotation.y = Math.PI / 2.8;
-  tagAnimal(rightEar, animal.id);
-  group.add(rightEar);
-
-  for (const x of [-1.05, -0.38, 0.38, 1.05]) {
-    const leg = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.28, 0.32, 1.55, 12),
-      skin,
-    );
-    leg.position.set(x, 0.78, 0.34);
-    leg.castShadow = true;
-    leg.receiveShadow = true;
-    tagAnimal(leg, animal.id);
-    group.add(leg);
-
-    const nail = new THREE.Mesh(
-      new THREE.BoxGeometry(0.28, 0.1, 0.34),
-      nailMaterial,
-    );
-    nail.position.set(x, 0.06, 0.48);
-    tagAnimal(nail, animal.id);
-    group.add(nail);
-  }
-
-  const eyeMaterial = new THREE.MeshStandardMaterial({ color: 0x1c2530 });
-  for (const x of [-0.25, 0.25]) {
-    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.06, 10, 10), eyeMaterial);
-    eye.position.set(x, 2.02, -2.08);
-    tagAnimal(eye, animal.id);
-    group.add(eye);
-  }
-
-  return group;
+  return elephant;
 }
 
 function createLion(animal) {
@@ -1258,9 +1188,15 @@ function updateAnimals(elapsed) {
       return;
     }
 
-    const bob = Math.sin(elapsed * 1.7 + object.bobOffset) * 0.06;
+    const bobAmplitude = object.animate ? 0.02 : 0.06;
+    const bob = Math.sin(elapsed * 1.7 + object.bobOffset) * bobAmplitude;
     object.root.position.y = object.baseY + bob;
-    object.label.position.y = 3.9 + Math.sin(elapsed * 2.4 + object.bobOffset) * 0.14;
+    object.label.position.y =
+      object.labelBaseY + Math.sin(elapsed * 2.4 + object.bobOffset) * 0.14;
+
+    if (object.animate) {
+      object.animate(object.model, elapsed + object.bobOffset);
+    }
 
     const targetHighlight =
       state.nearestAnimalId === animal.id && state.gameState === GAME_STATES.EXPLORING
@@ -1270,9 +1206,9 @@ function updateAnimals(elapsed) {
     object.zone.material.opacity = 0.28 + object.highlight * 0.26;
     object.zone.scale.setScalar(1 + object.highlight * 0.05);
 
-    object.materials.forEach((material) => {
+    object.materials.forEach(({ material, baseEmissiveIntensity }) => {
       if ("emissiveIntensity" in material) {
-        material.emissiveIntensity = 0.05 + object.highlight * 0.18;
+        material.emissiveIntensity = baseEmissiveIntensity + object.highlight * 0.18;
       }
     });
   });
@@ -1362,16 +1298,36 @@ function dampAngle(current, target, smoothing, delta) {
 
 function collectMaterials(group) {
   const materials = [];
+  const seen = new Set();
   group.traverse((child) => {
-    if (child.material) {
-      materials.push(child.material);
-    }
+    const childMaterials = Array.isArray(child.material)
+      ? child.material
+      : [child.material];
+
+    childMaterials.forEach((material) => {
+      if (!material || seen.has(material)) {
+        return;
+      }
+
+      seen.add(material);
+      materials.push({
+        material,
+        baseEmissiveIntensity:
+          "emissiveIntensity" in material ? material.emissiveIntensity : 0,
+      });
+    });
   });
   return materials;
 }
 
 function tagAnimal(object, animalId) {
   object.userData.animalId = animalId;
+}
+
+function tagAnimalHierarchy(root, animalId) {
+  root.traverse((child) => {
+    tagAnimal(child, animalId);
+  });
 }
 
 function createLabelSprite(text, options) {
