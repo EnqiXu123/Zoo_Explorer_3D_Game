@@ -40,6 +40,7 @@ const animals = [
     emoji: "🐘",
     position: { x: -12, z: -4 },
     rotationY: -Math.PI / 2,
+    enclosureRadius: 4.25,
     proximityRadius: 6.9,
     proximityHint: "Tap to meet Ellie",
     zoneColor: 0x9bc7ea,
@@ -79,6 +80,7 @@ const animals = [
     emoji: "🦁",
     position: { x: 12, z: -4 },
     rotationY: Math.PI / 2,
+    enclosureRadius: 4.25,
     proximityRadius: 6.7,
     proximityHint: "Tap to meet Leo",
     zoneColor: 0xf0b36d,
@@ -139,7 +141,9 @@ const ui = {
   rewardMessage: document.querySelector("#reward-message"),
   rewardClose: document.querySelector("#reward-close"),
   completionPopup: document.querySelector("#completion-popup"),
+  completionSubtitle: document.querySelector("#completion-subtitle"),
   completionMessage: document.querySelector("#completion-message"),
+  summaryProgressFill: document.querySelector("#summary-progress-fill"),
   completionClose: document.querySelector("#completion-close"),
 };
 
@@ -532,24 +536,9 @@ function addAnimals() {
     zone.receiveShadow = true;
     runtime.scene.add(zone);
 
-    const zoneFenceMaterial = new THREE.MeshStandardMaterial({
-      color: 0xa57b54,
-      roughness: 0.95,
-    });
-    for (let index = 0; index < 6; index += 1) {
-      const angle = (index / 6) * Math.PI * 2;
-      const post = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.14, 0.14, 1.05, 8),
-        zoneFenceMaterial,
-      );
-      post.position.set(
-        animal.position.x + Math.cos(angle) * 4.1,
-        0.52,
-        animal.position.z + Math.sin(angle) * 4.1,
-      );
-      post.castShadow = true;
-      runtime.scene.add(post);
-    }
+    runtime.scene.add(
+      createAnimalEnclosure(animal.position.x, animal.position.z, animal.enclosureRadius),
+    );
 
     const group = new THREE.Group();
     const model = sceneConfig.createModel(animal);
@@ -605,6 +594,66 @@ function addAnimals() {
       materials: collectMaterials(model),
     });
   });
+}
+
+function createAnimalEnclosure(centerX, centerZ, radius) {
+  const enclosure = new THREE.Group();
+
+  const postMaterial = new THREE.MeshStandardMaterial({
+    color: 0x865f42,
+    roughness: 0.9,
+  });
+  const railMaterial = new THREE.MeshStandardMaterial({
+    color: 0x9f7856,
+    roughness: 0.85,
+  });
+
+  const postGeometry = new THREE.BoxGeometry(0.24, 1.08, 0.24);
+  const railThickness = 0.16;
+  const sideCount = 8;
+  const points = [];
+
+  for (let index = 0; index < sideCount; index += 1) {
+    const angle = (index / sideCount) * Math.PI * 2 + Math.PI / sideCount;
+    points.push(
+      new THREE.Vector3(
+        centerX + Math.cos(angle) * radius,
+        0,
+        centerZ + Math.sin(angle) * radius,
+      ),
+    );
+  }
+
+  points.forEach((point, index) => {
+    const post = new THREE.Mesh(postGeometry, postMaterial);
+    post.position.set(point.x, 0.54, point.z);
+    post.castShadow = true;
+    post.receiveShadow = true;
+    enclosure.add(post);
+
+    const nextPoint = points[(index + 1) % points.length];
+    const segment = new THREE.Vector3().subVectors(nextPoint, point);
+    const railLength = Math.max(0.2, segment.length() - 0.24);
+    const segmentAngle = Math.atan2(segment.z, segment.x);
+
+    [0.8, 1.04].forEach((height) => {
+      const rail = new THREE.Mesh(
+        new THREE.BoxGeometry(railLength, railThickness, railThickness),
+        railMaterial,
+      );
+      rail.position.set(
+        (point.x + nextPoint.x) * 0.5,
+        height,
+        (point.z + nextPoint.z) * 0.5,
+      );
+      rail.rotation.y = -segmentAngle;
+      rail.castShadow = true;
+      rail.receiveShadow = true;
+      enclosure.add(rail);
+    });
+  });
+
+  return enclosure;
 }
 
 function createAnimalHintSprite(animal, sceneConfig) {
@@ -767,8 +816,8 @@ function buildMinimap() {
 function bindEvents() {
   ui.startButton.addEventListener("click", startGame);
   ui.closePanel.addEventListener("click", closeAnimalPanel);
-  ui.rewardClose.addEventListener("click", dismissPopup);
-  ui.completionClose.addEventListener("click", dismissPopup);
+  ui.rewardClose.addEventListener("click", handleRewardClose);
+  ui.completionClose.addEventListener("click", restartAdventure);
 
   window.addEventListener("resize", onResize);
   window.addEventListener("keydown", onKeyDown);
@@ -1238,13 +1287,17 @@ function showRewardPopup(animal) {
   ui.rewardPopup.classList.remove("hidden");
   ui.rewardTitle.textContent = `You learned something about ${animal.name}!`;
   ui.rewardMessage.textContent = `${animal.emoji} Fact Unlocked!`;
-  ui.rewardClose.textContent = state.pendingCompletion ? "See Result" : "Keep Exploring";
+  ui.rewardClose.textContent = state.pendingCompletion
+    ? "See what you learned"
+    : "Keep Exploring";
 
-  state.popupTimer = window.setTimeout(() => {
-    if (state.activePopup === "reward") {
-      dismissPopup();
-    }
-  }, 2400);
+  if (!state.pendingCompletion) {
+    state.popupTimer = window.setTimeout(() => {
+      if (state.activePopup === "reward") {
+        dismissPopup();
+      }
+    }, 2400);
+  }
 }
 
 function showCompletionPopup() {
@@ -1255,15 +1308,16 @@ function showCompletionPopup() {
   ui.popupBackdrop.classList.remove("hidden");
   ui.rewardPopup.classList.add("hidden");
   ui.completionPopup.classList.remove("hidden");
-  ui.completionMessage.textContent = `${state.learnedAnimals.size} Animals discovered!`;
+  ui.completionSubtitle.textContent =
+    "Great job, Explorer! You discovered all the animals!";
+  ui.completionMessage.textContent = `${animals.length} of ${animals.length} animals discovered`;
+  ui.summaryProgressFill.style.width = "100%";
 }
 
 function dismissPopup() {
   clearTimeout(state.popupTimer);
 
   if (state.activePopup === "reward" && state.pendingCompletion) {
-    state.pendingCompletion = false;
-    showCompletionPopup();
     return;
   }
 
@@ -1282,6 +1336,35 @@ function dismissPopup() {
   state.gameState = state.currentAnimalId
     ? GAME_STATES.INTERACTING
     : GAME_STATES.EXPLORING;
+}
+
+function handleRewardClose() {
+  if (state.activePopup === "reward" && state.pendingCompletion) {
+    state.pendingCompletion = false;
+    showCompletionPopup();
+    return;
+  }
+
+  dismissPopup();
+}
+
+function restartAdventure() {
+  clearTimeout(state.popupTimer);
+  ui.completionPopup.classList.add("hidden");
+  ui.rewardPopup.classList.add("hidden");
+  ui.popupBackdrop.classList.add("hidden");
+  state.activePopup = null;
+  state.pendingCompletion = false;
+  state.hasCompleted = false;
+
+  animals.forEach((animal) => {
+    animal.learned = false;
+  });
+  state.learnedAnimals.clear();
+  updateProgress();
+
+  closeAnimalPanel();
+  state.gameState = GAME_STATES.EXPLORING;
 }
 
 function updateProgress() {
@@ -1371,6 +1454,7 @@ function updateMovement(delta) {
       -WORLD_HALF_SIZE + 2.5,
       WORLD_HALF_SIZE - 2.5,
     );
+    keepPlayerOutsideAnimalEnclosures(state.playerPosition);
 
     const targetRotation = Math.atan2(runtime.tempVector.x, runtime.tempVector.z);
     runtime.player.rotation.y = dampAngle(
@@ -1555,6 +1639,31 @@ function distanceToAnimal(animal) {
   const dx = state.playerPosition.x - animal.position.x;
   const dz = state.playerPosition.z - animal.position.z;
   return Math.hypot(dx, dz);
+}
+
+function keepPlayerOutsideAnimalEnclosures(position) {
+  animals.forEach((animal) => {
+    const blockingRadius = (animal.enclosureRadius ?? 4.25) + 0.55;
+    const offset = runtime.tempVector3.set(
+      position.x - animal.position.x,
+      0,
+      position.z - animal.position.z,
+    );
+    const distance = offset.length();
+
+    if (distance >= blockingRadius) {
+      return;
+    }
+
+    if (distance < 0.001) {
+      offset.set(0, 0, 1);
+    } else {
+      offset.multiplyScalar(1 / distance);
+    }
+
+    position.x = animal.position.x + offset.x * blockingRadius;
+    position.z = animal.position.z + offset.z * blockingRadius;
+  });
 }
 
 function isAnimalNearby(animal) {

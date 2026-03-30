@@ -192,16 +192,62 @@
 
           <section
             id="completion-popup"
-            class="popup-card hidden"
+            class="popup-card summary-popup hidden"
             role="dialog"
             aria-modal="true"
             aria-labelledby="completion-title"
           >
-            <p class="eyebrow">Zoo Complete</p>
-            <h2 id="completion-title">You explored the zoo!</h2>
-            <p id="completion-message">2 Animals discovered!</p>
+            <p class="eyebrow">Adventure Complete</p>
+            <h2 id="completion-title">Your Zoo Adventure</h2>
+            <p id="completion-subtitle" class="summary-subtitle">
+              Great job, Explorer! You discovered all the animals!
+            </p>
+
+            <section class="summary-section">
+              <p class="summary-section-label">Progress Recap</p>
+              <div class="summary-progress-shell" aria-label="Progress recap">
+                <div class="summary-progress-track">
+                  <div
+                    id="summary-progress-fill"
+                    class="summary-progress-fill"
+                  ></div>
+                </div>
+                <p id="completion-message" class="summary-progress-text">
+                  2 of 2 animals discovered
+                </p>
+              </div>
+            </section>
+
+            <section class="summary-section">
+              <p class="summary-section-label">What You Learned</p>
+              <div class="summary-cards">
+                <article class="summary-animal-card summary-elephant-card">
+                  <div class="summary-animal-icon" aria-hidden="true">🐘</div>
+                  <div class="summary-animal-copy">
+                    <h3>Ellie the Elephant</h3>
+                    <p>
+                      Ellie uses her trunk like a super tool! She can grab food,
+                      drink water, and spray it like a shower!
+                    </p>
+                  </div>
+                </article>
+
+                <article class="summary-animal-card summary-lion-card">
+                  <div class="summary-animal-icon" aria-hidden="true">🦁</div>
+                  <div class="summary-animal-copy">
+                    <h3>Leo the Lion</h3>
+                    <p>
+                      Leo is a strong lion! He uses his loud roar to talk to
+                      other lions and protect his home!
+                    </p>
+                  </div>
+                </article>
+              </div>
+            </section>
+
+            <p class="summary-reward">You are a great explorer!</p>
             <button id="completion-close" class="primary-button" type="button">
-              Play On
+              Explore Again
             </button>
           </section>
         </div>
