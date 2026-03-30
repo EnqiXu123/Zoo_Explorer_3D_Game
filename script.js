@@ -38,6 +38,8 @@ const animals = [
     emoji: "🐘",
     position: { x: -12, z: -4 },
     rotationY: -Math.PI / 2,
+    proximityRadius: 6.9,
+    proximityHint: "Tap to meet Ellie",
     zoneColor: 0x9bc7ea,
     learned: false,
     interactions: [
@@ -75,6 +77,8 @@ const animals = [
     emoji: "🦁",
     position: { x: 12, z: -4 },
     rotationY: Math.PI / 2,
+    proximityRadius: 6.7,
+    proximityHint: "Tap to meet Leo",
     zoneColor: 0xf0b36d,
     learned: false,
     interactions: [
@@ -473,8 +477,21 @@ function addAnimals() {
     const model = sceneConfig.createModel(animal);
     group.position.set(animal.position.x, 0, animal.position.z);
     group.rotation.y = animal.rotationY;
+    tagAnimal(group, animal.id);
     group.add(model);
     group.add(createInteractionHitbox(animal.id));
+
+    const hint = createAnimalHintSprite(animal, sceneConfig);
+    hint.position.set(0, sceneConfig.hintBaseY, 0);
+    hint.scale.set(3.75, 1.26, 1);
+    hint.material.opacity = 0;
+    hint.visible = false;
+    group.add(hint);
+
+    const glow = createAnimalGlowRing(animal.zoneColor);
+    glow.position.y = 0.055;
+    group.add(glow);
+
     runtime.scene.add(group);
 
     const label = createLabelSprite(`${animal.emoji} ${animal.name}`, {
@@ -492,16 +509,65 @@ function addAnimals() {
       model,
       zone,
       label,
+      hint,
+      glow,
       highlight: 0,
+      proximityBlend: 0,
+      proximityState: "idle",
       baseY: group.position.y,
       labelBaseY: sceneConfig.labelBaseY,
+      hintBaseY: sceneConfig.hintBaseY,
+      hintScaleX: 3.75,
+      hintScaleY: 1.26,
       labelFloatAmplitude: sceneConfig.labelFloatAmplitude,
       rootBobAmplitude: sceneConfig.rootBobAmplitude,
       bobOffset: sceneConfig.bobOffset,
       animate: sceneConfig.animate,
+      reactToPlayer: sceneConfig.reactToPlayer,
       materials: collectMaterials(model),
     });
   });
+}
+
+function createAnimalHintSprite(animal, sceneConfig) {
+  return createLabelSprite(animal.proximityHint, {
+    background: "#fff8e1",
+    border: sceneConfig.hintBorder,
+    textColor: "#214336",
+    fontSize: 34,
+  });
+}
+
+function createAnimalGlowRing(color) {
+  const glow = new THREE.Group();
+
+  const aura = new THREE.Mesh(
+    new THREE.CircleGeometry(2.55, 28),
+    new THREE.MeshBasicMaterial({
+      color,
+      transparent: true,
+      opacity: 0,
+      depthWrite: false,
+    }),
+  );
+  aura.rotation.x = -Math.PI / 2;
+  glow.add(aura);
+
+  const ring = new THREE.Mesh(
+    new THREE.RingGeometry(2.35, 2.95, 32),
+    new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0,
+      depthWrite: false,
+    }),
+  );
+  ring.rotation.x = -Math.PI / 2;
+  glow.add(ring);
+
+  glow.userData.aura = aura;
+  glow.userData.ring = ring;
+  return glow;
 }
 
 function createInteractionHitbox(animalId) {
@@ -556,10 +622,13 @@ function getAnimalSceneConfig(animalId) {
     return {
       createModel: createSceneElephant,
       labelBaseY: 4.7,
+      hintBaseY: 3.45,
+      hintBorder: "#7ea8c9",
       labelFloatAmplitude: 0.14,
       rootBobAmplitude: 0.02,
       bobOffset: 0,
       animate: updateElephantAnimation,
+      reactToPlayer: applyElephantProximityReaction,
     };
   }
 
@@ -567,20 +636,26 @@ function getAnimalSceneConfig(animalId) {
     return {
       createModel: createSceneLion,
       labelBaseY: 4.15,
+      hintBaseY: 3.2,
+      hintBorder: "#db8a34",
       labelFloatAmplitude: 0.12,
       rootBobAmplitude: 0,
       bobOffset: 1.6,
       animate: updateLionAnimation,
+      reactToPlayer: applyLionProximityReaction,
     };
   }
 
   return {
     createModel: () => new THREE.Group(),
     labelBaseY: 4,
+    hintBaseY: 3.1,
+    hintBorder: "#7ea8c9",
     labelFloatAmplitude: 0.14,
     rootBobAmplitude: 0.04,
     bobOffset: 0,
     animate: null,
+    reactToPlayer: null,
   };
 }
 
@@ -1015,9 +1090,9 @@ function animate(timestamp) {
 
   updateMovement(delta);
   updateExplorer(elapsed);
+  updateAnimalProximityStates();
   updateCamera(delta);
   updateAnimals(elapsed);
-  updateNearestAnimal();
   updateMinimap();
   updateInteractionHint();
 
@@ -1137,17 +1212,65 @@ function updateAnimals(elapsed) {
       object.labelBaseY +
       Math.sin(elapsed * 2.4 + object.bobOffset) * object.labelFloatAmplitude;
 
+    const highlightTarget =
+      object.proximityState === "idle"
+        ? 0
+        : object.proximityState === "interacting"
+          ? 1.16
+          : 1;
+    object.proximityBlend = THREE.MathUtils.lerp(
+      object.proximityBlend,
+      highlightTarget,
+      object.proximityState === "idle" ? 0.1 : 0.16,
+    );
+
     if (object.animate) {
       object.animate(object.model, elapsed + object.bobOffset);
     }
 
-    const targetHighlight =
-      state.nearestAnimalId === animal.id && state.gameState === GAME_STATES.EXPLORING
-        ? 1
-        : 0;
-    object.highlight = THREE.MathUtils.lerp(object.highlight, targetHighlight, 0.12);
+    if (object.reactToPlayer) {
+      object.reactToPlayer({
+        animal,
+        object,
+        elapsed,
+        blend: object.proximityBlend,
+      });
+    }
+
+    object.highlight = THREE.MathUtils.lerp(
+      object.highlight,
+      object.proximityBlend,
+      0.12,
+    );
     object.zone.material.opacity = 0.28 + object.highlight * 0.26;
     object.zone.scale.setScalar(1 + object.highlight * 0.05);
+
+    const glowAura = object.glow.userData.aura;
+    const glowRing = object.glow.userData.ring;
+    const glowPulse = 1 + Math.sin(elapsed * 2.3 + object.bobOffset) * 0.03;
+    object.glow.scale.setScalar(glowPulse + object.highlight * 0.035);
+    glowAura.material.opacity = object.highlight * 0.16;
+    glowRing.material.opacity = object.highlight * 0.24;
+
+    const shouldShowHint =
+      object.proximityState === "nearby" &&
+      state.gameState === GAME_STATES.EXPLORING &&
+      !state.activePopup &&
+      !state.currentAnimalId;
+    object.hint.visible = shouldShowHint || object.proximityBlend > 0.03;
+    object.hint.position.y =
+      object.hintBaseY +
+      Math.sin(elapsed * 3 + object.bobOffset) * 0.09 +
+      object.proximityBlend * 0.08;
+    object.hint.material.opacity = shouldShowHint
+      ? THREE.MathUtils.clamp(0.2 + object.proximityBlend * 0.72, 0, 0.92)
+      : Math.max(0, object.hint.material.opacity * 0.86 - 0.02);
+    const hintScale = 1 + object.proximityBlend * 0.03;
+    object.hint.scale.set(
+      object.hintScaleX * hintScale,
+      object.hintScaleY * hintScale,
+      1,
+    );
 
     object.materials.forEach(({ material, baseEmissiveIntensity }) => {
       if ("emissiveIntensity" in material) {
@@ -1157,27 +1280,36 @@ function updateAnimals(elapsed) {
   });
 }
 
-function updateNearestAnimal() {
+function updateAnimalProximityStates() {
   let nearestId = null;
   let nearestDistance = Infinity;
 
   animals.forEach((animal) => {
     const distance = distanceToAnimal(animal);
-    if (distance < nearestDistance) {
+    const object = runtime.animalObjects.get(animal.id);
+    if (!object) {
+      return;
+    }
+
+    object.distanceToPlayer = distance;
+    const nextState = getAnimalProximityState(animal, distance);
+    object.proximityState = nextState;
+
+    if (nextState !== "idle" && distance < nearestDistance) {
       nearestId = animal.id;
       nearestDistance = distance;
     }
   });
 
-  state.nearestAnimalId =
-    nearestDistance <= INTERACTION_DISTANCE ? nearestId : null;
+  state.nearestAnimalId = nearestId;
 
   animals.forEach((animal) => {
     const marker = runtime.mapMarkers.get(animal.id);
+    const object = runtime.animalObjects.get(animal.id);
     if (!marker) {
       return;
     }
-    marker.classList.toggle("is-near", state.nearestAnimalId === animal.id);
+    marker.classList.toggle("is-near", object?.proximityState !== "idle");
   });
 }
 
@@ -1188,32 +1320,7 @@ function updateMinimap() {
 }
 
 function updateInteractionHint() {
-  const shouldShow =
-    state.nearestAnimalId &&
-    state.gameState === GAME_STATES.EXPLORING &&
-    !state.activePopup &&
-    !state.currentAnimalId;
-
-  if (!shouldShow) {
-    ui.interactionHint.classList.add("hidden");
-    return;
-  }
-
-  const object = runtime.animalObjects.get(state.nearestAnimalId);
-  const screenPosition = object.root.localToWorld(new THREE.Vector3(0, 3.1, 0));
-  screenPosition.project(runtime.camera);
-
-  if (screenPosition.z < -1 || screenPosition.z > 1) {
-    ui.interactionHint.classList.add("hidden");
-    return;
-  }
-
-  const x = (screenPosition.x * 0.5 + 0.5) * window.innerWidth;
-  const y = (-screenPosition.y * 0.5 + 0.5) * window.innerHeight;
-
-  ui.interactionHint.style.left = `${x}px`;
-  ui.interactionHint.style.top = `${y}px`;
-  ui.interactionHint.classList.remove("hidden");
+  ui.interactionHint.classList.add("hidden");
 }
 
 function distanceToAnimal(animal) {
@@ -1223,7 +1330,72 @@ function distanceToAnimal(animal) {
 }
 
 function isAnimalNearby(animal) {
-  return distanceToAnimal(animal) <= INTERACTION_DISTANCE;
+  return distanceToAnimal(animal) <= getAnimalProximityRadius(animal);
+}
+
+function getAnimalProximityRadius(animal) {
+  return animal.proximityRadius ?? INTERACTION_DISTANCE;
+}
+
+function getAnimalProximityState(animal, distance) {
+  if (state.currentAnimalId === animal.id) {
+    return "interacting";
+  }
+
+  const isExploring = state.gameState === GAME_STATES.EXPLORING;
+  if (isExploring && distance <= getAnimalProximityRadius(animal)) {
+    return "nearby";
+  }
+
+  return "idle";
+}
+
+function applyElephantProximityReaction({ object, blend, elapsed }) {
+  const animation = object.model.userData?.animation;
+  if (!animation || blend <= 0.001) {
+    return;
+  }
+
+  const playerLocal = object.model.worldToLocal(
+    runtime.tempVector3.copy(state.playerPosition).setY(2.1),
+  );
+  const turnTarget = THREE.MathUtils.clamp(
+    Math.atan2(playerLocal.z, Math.max(0.35, playerLocal.x)) * 0.5,
+    -0.18,
+    0.18,
+  );
+  const alertMotion = Math.sin(elapsed * 2.25 + object.bobOffset);
+  const earFlutter = Math.sin(elapsed * 1.7 + 0.45) * 0.03 * blend;
+
+  animation.headPivot.rotation.y = animation.base.headY + turnTarget * blend;
+  animation.trunkBase.rotation.z += alertMotion * 0.028 * blend;
+  animation.trunkMid.rotation.z += alertMotion * 0.055 * blend;
+  animation.trunkTip.rotation.z += alertMotion * 0.085 * blend;
+  animation.leftEar.rotation.y += earFlutter;
+  animation.rightEar.rotation.y -= earFlutter;
+}
+
+function applyLionProximityReaction({ object, blend, elapsed }) {
+  const animation = object.model.userData?.animation;
+  if (!animation || blend <= 0.001) {
+    return;
+  }
+
+  const playerLocal = object.model.worldToLocal(
+    runtime.tempVector3.copy(state.playerPosition).setY(1.9),
+  );
+  const headTurn = THREE.MathUtils.clamp(
+    Math.atan2(playerLocal.z, Math.max(0.4, playerLocal.x)) * 0.42,
+    -0.16,
+    0.16,
+  );
+  const tailWave = Math.sin(elapsed * 1.5 + 0.2) * blend;
+
+  animation.headPivot.rotation.y += headTurn * blend;
+  animation.headPivot.rotation.x -= 0.04 * blend;
+  animation.manePivot.rotation.y += headTurn * 0.28 * blend;
+  animation.tailBasePivot.rotation.z += tailWave * 0.09;
+  animation.tailMidPivot.rotation.z += tailWave * 0.14;
 }
 
 function worldToMap(x, z) {

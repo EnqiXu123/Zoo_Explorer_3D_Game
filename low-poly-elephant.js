@@ -336,6 +336,7 @@ export function createLowPolyElephant() {
       rigY: rig.position.y,
       rigZ: rig.rotation.z,
       headX: headPivot.rotation.x,
+      headY: headPivot.rotation.y,
       headZ: headPivot.rotation.z,
       trunkBaseZ: trunkBase.rotation.z,
       trunkMidZ: trunkMid.rotation.z,
