@@ -102,28 +102,28 @@ function createBoot(bootMaterial, soleMaterial) {
   return boot;
 }
 
-function createArm(sleeveMaterial, skinMaterial) {
+function createArm(sleeveMaterial, skinMaterial, side) {
   const arm = new THREE.Group();
 
   const sleeve = createMesh(
     new THREE.CylinderGeometry(0.11, 0.13, 0.2, 6),
     sleeveMaterial,
   );
-  sleeve.position.y = -0.12;
+  sleeve.position.set(side * 0.01, -0.12, 0.01);
   arm.add(sleeve);
 
   const upperArm = createMesh(
     new THREE.CylinderGeometry(0.09, 0.11, 0.42, 6),
     skinMaterial,
   );
-  upperArm.position.y = -0.38;
+  upperArm.position.set(side * 0.03, -0.38, 0.04);
   arm.add(upperArm);
 
   const forearm = createMesh(
     new THREE.CylinderGeometry(0.085, 0.095, 0.36, 6),
     skinMaterial,
   );
-  forearm.position.y = -0.78;
+  forearm.position.set(side * 0.12, -0.78, 0.12);
   arm.add(forearm);
 
   const hand = createMesh(
@@ -131,7 +131,7 @@ function createArm(sleeveMaterial, skinMaterial) {
     skinMaterial,
   );
   hand.scale.set(0.92, 1, 0.82);
-  hand.position.y = -1.04;
+  hand.position.set(side * 0.22, -1.02, 0.2);
   arm.add(hand);
 
   return arm;
@@ -429,17 +429,24 @@ export function createExplorerCharacter() {
   headPivot.add(smile);
 
   const leftArmPivot = new THREE.Group();
-  leftArmPivot.position.set(-0.48, 0.54, 0);
+  // Keep the resting pose slightly open so both arms stay visible from the
+  // game's over-the-shoulder camera and from the front when the explorer is
+  // standing still.
+  leftArmPivot.position.set(-0.64, 0.5, 0.06);
+  leftArmPivot.rotation.z = 0.34;
   bodyPivot.add(leftArmPivot);
-  const leftArm = createArm(shirtMaterial, skinMaterial);
-  leftArm.rotation.z = 0.1;
+  const leftArm = createArm(shirtMaterial, skinMaterial, -1);
+  leftArm.rotation.x = -0.12;
+  leftArm.rotation.z = 0.02;
   leftArmPivot.add(leftArm);
 
   const rightArmPivot = new THREE.Group();
-  rightArmPivot.position.set(0.48, 0.54, 0);
+  rightArmPivot.position.set(0.64, 0.5, 0.06);
+  rightArmPivot.rotation.z = -0.34;
   bodyPivot.add(rightArmPivot);
-  const rightArm = createArm(shirtMaterial, skinMaterial);
-  rightArm.rotation.z = -0.1;
+  const rightArm = createArm(shirtMaterial, skinMaterial, 1);
+  rightArm.rotation.x = -0.12;
+  rightArm.rotation.z = -0.02;
   rightArmPivot.add(rightArm);
 
   const leftLegPivot = new THREE.Group();
