@@ -3,6 +3,10 @@ import {
   createLowPolyElephant,
   updateElephantAnimation,
 } from "./low-poly-elephant.js";
+import {
+  createLowPolyLion,
+  updateLionAnimation,
+} from "./low-poly-lion.js";
 
 const GAME_STATES = {
   START: "START",
@@ -423,6 +427,7 @@ function createTree(x, z, scale) {
 
 function addAnimals() {
   animals.forEach((animal) => {
+    const sceneConfig = getAnimalSceneConfig(animal.id);
     const zone = new THREE.Mesh(
       new THREE.CircleGeometry(4.7, 36),
       new THREE.MeshStandardMaterial({
@@ -457,10 +462,7 @@ function addAnimals() {
     }
 
     const group = new THREE.Group();
-    const model =
-      animal.id === "elephant"
-        ? createSceneElephant(animal)
-        : createLion(animal);
+    const model = sceneConfig.createModel(animal);
     group.position.set(animal.position.x, 0, animal.position.z);
     group.rotation.y = animal.rotationY;
     group.add(model);
@@ -473,8 +475,7 @@ function addAnimals() {
       textColor: "#214336",
       fontSize: 42,
     });
-    const labelBaseY = animal.id === "elephant" ? 4.7 : 3.9;
-    label.position.set(0, labelBaseY, 0);
+    label.position.set(0, sceneConfig.labelBaseY, 0);
     label.scale.set(4.2, 1.8, 1);
     group.add(label);
 
@@ -485,9 +486,11 @@ function addAnimals() {
       label,
       highlight: 0,
       baseY: group.position.y,
-      labelBaseY,
-      bobOffset: animal.id === "elephant" ? 0 : 1.6,
-      animate: animal.id === "elephant" ? updateElephantAnimation : null,
+      labelBaseY: sceneConfig.labelBaseY,
+      labelFloatAmplitude: sceneConfig.labelFloatAmplitude,
+      rootBobAmplitude: sceneConfig.rootBobAmplitude,
+      bobOffset: sceneConfig.bobOffset,
+      animate: sceneConfig.animate,
       materials: collectMaterials(model),
     });
   });
@@ -499,12 +502,21 @@ function createInteractionHitbox(animalId) {
     opacity: 0,
     depthWrite: false,
   });
-  const hitbox =
-    animalId === "elephant"
-      ? new THREE.Mesh(new THREE.BoxGeometry(5.8, 4, 3.3), material)
-      : new THREE.Mesh(new THREE.SphereGeometry(2.6, 18, 18), material);
+  let hitbox = null;
 
-  hitbox.position.set(0, animalId === "elephant" ? 1.95 : 1.7, 0);
+  if (animalId === "elephant") {
+    hitbox = new THREE.Mesh(new THREE.BoxGeometry(5.8, 4, 3.3), material);
+    hitbox.position.set(0, 1.95, 0);
+  } else if (animalId === "lion") {
+    // A wide box keeps the calm lion easy to tap on mobile without needing
+    // precise contact on the mane or face.
+    hitbox = new THREE.Mesh(new THREE.BoxGeometry(5.4, 3.35, 3.1), material);
+    hitbox.position.set(0.35, 1.7, 0);
+  } else {
+    hitbox = new THREE.Mesh(new THREE.SphereGeometry(2.6, 18, 18), material);
+    hitbox.position.set(0, 1.7, 0);
+  }
+
   tagAnimal(hitbox, animalId);
   return hitbox;
 }
@@ -519,101 +531,49 @@ function createSceneElephant(animal) {
   return elephant;
 }
 
-function createLion(animal) {
-  const group = new THREE.Group();
-  const bodyMaterial = new THREE.MeshStandardMaterial({
-    color: 0xd69545,
-    roughness: 0.8,
-    emissive: 0x40230f,
-    emissiveIntensity: 0.05,
-  });
-  const maneMaterial = new THREE.MeshStandardMaterial({
-    color: 0x8d4d19,
-    roughness: 0.84,
-    emissive: 0x40230f,
-    emissiveIntensity: 0.04,
-  });
-  const snoutMaterial = new THREE.MeshStandardMaterial({
-    color: 0xf2ddba,
-    roughness: 0.9,
-  });
+function createSceneLion(animal) {
+  const lion = createLowPolyLion();
 
-  const body = new THREE.Mesh(
-    new THREE.BoxGeometry(3.05, 1.45, 1.65),
-    bodyMaterial,
-  );
-  body.position.y = 1.32;
-  body.castShadow = true;
-  body.receiveShadow = true;
-  tagAnimal(body, animal.id);
-  group.add(body);
+  // Scale and angle the lion to feel balanced with the elephant and readable
+  // from the game's default camera.
+  lion.scale.setScalar(0.92);
+  lion.rotation.y = 0.22;
+  tagAnimalHierarchy(lion, animal.id);
 
-  const mane = new THREE.Mesh(
-    new THREE.SphereGeometry(0.88, 22, 22),
-    maneMaterial,
-  );
-  mane.position.set(0, 1.78, -1.45);
-  mane.castShadow = true;
-  tagAnimal(mane, animal.id);
-  group.add(mane);
+  return lion;
+}
 
-  const head = new THREE.Mesh(
-    new THREE.SphereGeometry(0.62, 22, 22),
-    bodyMaterial,
-  );
-  head.position.set(0, 1.78, -1.7);
-  head.castShadow = true;
-  tagAnimal(head, animal.id);
-  group.add(head);
-
-  const snout = new THREE.Mesh(
-    new THREE.BoxGeometry(0.58, 0.36, 0.46),
-    snoutMaterial,
-  );
-  snout.position.set(0, 1.55, -2.12);
-  snout.castShadow = true;
-  tagAnimal(snout, animal.id);
-  group.add(snout);
-
-  for (const x of [-0.85, -0.25, 0.25, 0.85]) {
-    const leg = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.17, 0.2, 1.32, 10),
-      bodyMaterial,
-    );
-    leg.position.set(x, 0.66, 0.18);
-    leg.castShadow = true;
-    leg.receiveShadow = true;
-    tagAnimal(leg, animal.id);
-    group.add(leg);
+function getAnimalSceneConfig(animalId) {
+  if (animalId === "elephant") {
+    return {
+      createModel: createSceneElephant,
+      labelBaseY: 4.7,
+      labelFloatAmplitude: 0.14,
+      rootBobAmplitude: 0.02,
+      bobOffset: 0,
+      animate: updateElephantAnimation,
+    };
   }
 
-  const tail = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.05, 0.08, 1.5, 10),
-    bodyMaterial,
-  );
-  tail.position.set(0, 1.48, 1.46);
-  tail.rotation.x = -0.88;
-  tail.castShadow = true;
-  tagAnimal(tail, animal.id);
-  group.add(tail);
-
-  const tuft = new THREE.Mesh(
-    new THREE.SphereGeometry(0.14, 12, 12),
-    maneMaterial,
-  );
-  tuft.position.set(0, 2.03, 2.07);
-  tagAnimal(tuft, animal.id);
-  group.add(tuft);
-
-  const eyeMaterial = new THREE.MeshStandardMaterial({ color: 0x050505 });
-  for (const x of [-0.19, 0.19]) {
-    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.032, 10, 10), eyeMaterial);
-    eye.position.set(x, 1.9, -2.26);
-    tagAnimal(eye, animal.id);
-    group.add(eye);
+  if (animalId === "lion") {
+    return {
+      createModel: createSceneLion,
+      labelBaseY: 4.15,
+      labelFloatAmplitude: 0.12,
+      rootBobAmplitude: 0,
+      bobOffset: 1.6,
+      animate: updateLionAnimation,
+    };
   }
 
-  return group;
+  return {
+    createModel: () => new THREE.Group(),
+    labelBaseY: 4,
+    labelFloatAmplitude: 0.14,
+    rootBobAmplitude: 0.04,
+    bobOffset: 0,
+    animate: null,
+  };
 }
 
 function addPlayer() {
@@ -1188,11 +1148,12 @@ function updateAnimals(elapsed) {
       return;
     }
 
-    const bobAmplitude = object.animate ? 0.02 : 0.06;
-    const bob = Math.sin(elapsed * 1.7 + object.bobOffset) * bobAmplitude;
+    const bob =
+      Math.sin(elapsed * 1.7 + object.bobOffset) * object.rootBobAmplitude;
     object.root.position.y = object.baseY + bob;
     object.label.position.y =
-      object.labelBaseY + Math.sin(elapsed * 2.4 + object.bobOffset) * 0.14;
+      object.labelBaseY +
+      Math.sin(elapsed * 2.4 + object.bobOffset) * object.labelFloatAmplitude;
 
     if (object.animate) {
       object.animate(object.model, elapsed + object.bobOffset);
