@@ -66,30 +66,21 @@ function createEar(outerMaterial, innerMaterial, side) {
   return ear;
 }
 
-function createEye(zOffset, scleraMaterial, pupilMaterial, highlightMaterial) {
+function createEye(pupilMaterial, highlightMaterial) {
   const eye = new THREE.Group();
 
-  const sclera = createMesh(
-    new THREE.SphereGeometry(0.2, 7, 7),
-    scleraMaterial,
-  );
-  sclera.scale.set(1.18, 0.96, 0.72);
-  sclera.position.set(0.02, 0, zOffset);
-  eye.add(sclera);
-
   const pupil = createMesh(
-    new THREE.SphereGeometry(0.095, 6, 6),
+    new THREE.SphereGeometry(0.1, 6, 6),
     pupilMaterial,
   );
-  pupil.scale.set(0.8, 0.88, 0.5);
-  pupil.position.set(0.13, -0.01, zOffset);
+  pupil.scale.set(0.86, 0.98, 0.58);
   eye.add(pupil);
 
   const highlight = createMesh(
-    new THREE.SphereGeometry(0.035, 5, 5),
+    new THREE.SphereGeometry(0.028, 5, 5),
     highlightMaterial,
   );
-  highlight.position.set(0.17, 0.055, zOffset + Math.sign(zOffset) * 0.02);
+  highlight.position.set(0.04, 0.05, 0.03);
   eye.add(highlight);
 
   return eye;
@@ -161,12 +152,6 @@ export function createLowPolyElephant() {
     roughness: 0.82,
     emissive: 0xb8b1a2,
     emissiveIntensity: 0.015,
-  });
-  const eyeWhiteMaterial = createMaterial(0xf6f1e8, {
-    roughness: 0.48,
-    emissive: 0xc4bcae,
-    emissiveIntensity: 0.024,
-    flatShading: false,
   });
   const eyeMaterial = createMaterial(0x171315, {
     roughness: 0.25,
@@ -251,24 +236,13 @@ export function createLowPolyElephant() {
   rightEar.rotation.y = -Math.PI * 0.55;
   headPivot.add(rightEar);
 
-  const leftEye = createEye(0.24, eyeWhiteMaterial, eyeMaterial, highlightMaterial);
-  leftEye.position.set(1.02, 0.22, 0);
+  const leftEye = createEye(eyeMaterial, highlightMaterial);
+  leftEye.position.set(1.01, 0.18, 0.18);
   headPivot.add(leftEye);
 
-  const rightEye = createMesh(
-    new THREE.SphereGeometry(0.11, 6, 6),
-    eyeMaterial,
-  );
-  rightEye.scale.set(0.9, 1, 0.62);
-  rightEye.position.set(0.8, 0.36, 0.16);
+  const rightEye = createEye(eyeMaterial, highlightMaterial);
+  rightEye.position.set(1.01, 0.18, -0.18);
   headPivot.add(rightEye);
-
-  const rightEyeHighlight = createMesh(
-    new THREE.SphereGeometry(0.03, 5, 5),
-    highlightMaterial,
-  );
-  rightEyeHighlight.position.set(0.86, 0.41, 0.18);
-  headPivot.add(rightEyeHighlight);
 
   const leftTusk = createTusk(0.45, tuskMaterial);
   leftTusk.position.set(0.25, -0.38, 0);

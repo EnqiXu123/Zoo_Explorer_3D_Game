@@ -512,8 +512,8 @@ function createInteractionHitbox(animalId) {
 function createSceneElephant(animal) {
   const elephant = createLowPolyElephant();
 
-  // The reusable helper faces +X; rotate it so the existing enclosure heading still applies.
-  elephant.rotation.y = Math.PI / 2;
+  // Turn the helper slightly toward the player so the face reads clearly in-game.
+  elephant.rotation.y = Math.PI / 2 - 0.38;
   tagAnimalHierarchy(elephant, animal.id);
 
   return elephant;
@@ -605,9 +605,9 @@ function createLion(animal) {
   tagAnimal(tuft, animal.id);
   group.add(tuft);
 
-  const eyeMaterial = new THREE.MeshStandardMaterial({ color: 0x23180e });
+  const eyeMaterial = new THREE.MeshStandardMaterial({ color: 0x050505 });
   for (const x of [-0.19, 0.19]) {
-    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.05, 10, 10), eyeMaterial);
+    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.032, 10, 10), eyeMaterial);
     eye.position.set(x, 1.9, -2.26);
     tagAnimal(eye, animal.id);
     group.add(eye);
