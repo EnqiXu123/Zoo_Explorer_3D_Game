@@ -16,254 +16,71 @@
 
       <div id="ui-layer">
         <section id="start-screen" class="launch-screen">
-          <div class="launch-copy">
-            <p class="launch-tag">Storybook Zoo Quest</p>
-            <h1>Zoo Explorer 3D</h1>
-            <p class="launch-subtitle">
-              March through a sunny zoo, follow the mini map, and meet two
-              mystery animal friends waiting past the gate.
-            </p>
-
-            <div class="launch-quest-card" aria-hidden="true">
-              <div class="quest-row quest-row-sky">
-                <span class="quest-number">1</span>
-                <div>
-                  <strong class="quest-title">Follow the clues</strong>
-                  <span class="quest-copy">
-                    Use the mini map to spot where the surprises are hiding.
-                  </span>
-                </div>
-              </div>
-              <div class="quest-row quest-row-sun">
-                <span class="quest-number">2</span>
-                <div>
-                  <strong class="quest-title">Tap to discover</strong>
-                  <span class="quest-copy">
-                    Walk up to a new friend and tap to wake up a fact.
-                  </span>
-                </div>
-              </div>
-              <div class="quest-row quest-row-leaf">
-                <span class="quest-number">3</span>
-                <div>
-                  <strong class="quest-title">Collect fact badges</strong>
-                  <span class="quest-copy">
-                    Learn one cool thing about each animal and finish the zoo
-                    quest.
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div class="launch-actions">
-              <button id="start-button" class="primary-button" type="button">
-                Open the Zoo Gate
-              </button>
-              <p class="launch-note">
-                Made for taps, smiles, and short animal facts. No typing
-                needed.
-              </p>
-            </div>
+          <div class="launch-map-overlay" aria-hidden="true">
+            <span class="map-compass"></span>
+            <span class="map-path"></span>
+            <span class="footprint footprint-a"></span>
+            <span class="footprint footprint-b"></span>
           </div>
 
-          <div class="launch-stage" aria-hidden="true">
-            <div class="launch-badge badge-top">2 mystery friends inside</div>
-            <div class="launch-badge badge-bottom">Fact badges to collect</div>
+          <div class="launch-header">
+            <h1 class="wood-sign">Zoo Explorer 3D</h1>
+            <p class="launch-subtitle">
+              Go on a wild safari and discover amazing animals!
+            </p>
+          </div>
 
-            <div class="launch-stage-card">
+          <div class="launch-hero" aria-hidden="true">
+            <div class="hero-glow"></div>
+
+            <div class="hero-leaf-corner corner-left">
+              <span class="decor-leaf leaf-a"></span>
+              <span class="decor-leaf leaf-b"></span>
+              <span class="decor-leaf leaf-c"></span>
+            </div>
+
+            <div class="hero-leaf-corner corner-right">
+              <span class="decor-leaf leaf-a"></span>
+              <span class="decor-leaf leaf-b"></span>
+              <span class="decor-leaf leaf-c"></span>
+            </div>
+
+            <div class="hero-bird">🦜</div>
+            <div class="hero-butterfly">🦋</div>
+
+            <div class="hero-sparkles">
               <span class="spark spark-a"></span>
               <span class="spark spark-b"></span>
               <span class="spark spark-c"></span>
               <span class="spark spark-d"></span>
-
-              <svg
-                class="explorer-illustration"
-                viewBox="0 0 460 420"
-                role="presentation"
-              >
-                <defs>
-                  <linearGradient id="cardSky" x1="0%" x2="0%" y1="0%" y2="1">
-                    <stop offset="0%" stop-color="#9be9ff"></stop>
-                    <stop offset="100%" stop-color="#fff4a6"></stop>
-                  </linearGradient>
-                  <linearGradient id="shirtGlow" x1="0%" x2="100%">
-                    <stop offset="0%" stop-color="#ff8447"></stop>
-                    <stop offset="100%" stop-color="#ffbd59"></stop>
-                  </linearGradient>
-                  <linearGradient id="hatGlow" x1="0%" x2="100%">
-                    <stop offset="0%" stop-color="#169b7e"></stop>
-                    <stop offset="100%" stop-color="#45c79f"></stop>
-                  </linearGradient>
-                  <linearGradient id="gateGlow" x1="0%" x2="100%">
-                    <stop offset="0%" stop-color="#ff9d56"></stop>
-                    <stop offset="100%" stop-color="#ffcc6b"></stop>
-                  </linearGradient>
-                </defs>
-
-                <rect x="18" y="16" width="424" height="388" rx="34" fill="url(#cardSky)"></rect>
-                <circle cx="88" cy="78" r="20" fill="#fff2a6"></circle>
-                <circle cx="348" cy="78" r="14" fill="#ffffff" opacity="0.82"></circle>
-                <circle cx="365" cy="97" r="10" fill="#ffffff" opacity="0.82"></circle>
-                <circle cx="333" cy="97" r="10" fill="#ffffff" opacity="0.82"></circle>
-                <circle cx="104" cy="115" r="12" fill="#ff8d68"></circle>
-                <circle cx="372" cy="120" r="8" fill="#ffd461"></circle>
-                <circle cx="74" cy="138" r="8" fill="#52c39d"></circle>
-
-                <path
-                  d="M27 303c67-32 140-36 205-21 58 14 123 18 201-9v98H27z"
-                  fill="#89cf6f"
-                ></path>
-                <path
-                  d="M27 330c78-15 160-13 234 7 54 15 110 14 172-6v74H27z"
-                  fill="#67b85a"
-                ></path>
-                <path
-                  d="M155 403c12-84 44-145 91-184 47 37 81 100 94 184z"
-                  fill="#ffdb82"
-                ></path>
-
-                <path
-                  d="M137 280v-86c0-71 47-116 114-116 69 0 114 45 114 116v86"
-                  fill="none"
-                  stroke="url(#gateGlow)"
-                  stroke-linecap="round"
-                  stroke-width="24"
-                ></path>
-                <rect x="158" y="172" width="188" height="118" rx="24" fill="#fff6cf"></rect>
-                <rect x="178" y="190" width="66" height="84" rx="18" fill="#84ca88"></rect>
-                <rect x="258" y="190" width="66" height="84" rx="18" fill="#84ca88"></rect>
-                <rect x="201" y="103" width="96" height="40" rx="20" fill="#1b7f69"></rect>
-                <text
-                  x="249"
-                  y="130"
-                  fill="#fff9ea"
-                  font-family="'Trebuchet MS', sans-serif"
-                  font-size="22"
-                  font-weight="800"
-                  text-anchor="middle"
-                >
-                  ZOO
-                </text>
-
-                <circle cx="141" cy="134" r="22" fill="#ffc8df"></circle>
-                <circle cx="141" cy="134" r="16" fill="#ffffff" opacity="0.86"></circle>
-                <text
-                  x="141"
-                  y="140"
-                  fill="#ff7d61"
-                  font-family="'Trebuchet MS', sans-serif"
-                  font-size="24"
-                  font-weight="800"
-                  text-anchor="middle"
-                >
-                  ?
-                </text>
-
-                <circle cx="355" cy="152" r="24" fill="#fff1b5"></circle>
-                <circle cx="355" cy="152" r="17" fill="#ffffff" opacity="0.88"></circle>
-                <text
-                  x="355"
-                  y="159"
-                  fill="#1b7f69"
-                  font-family="'Trebuchet MS', sans-serif"
-                  font-size="24"
-                  font-weight="800"
-                  text-anchor="middle"
-                >
-                  ?
-                </text>
-
-                <path
-                  d="M163 258c16-23 43-34 82-34 34 0 61 11 80 34l22 84H143z"
-                  fill="url(#shirtGlow)"
-                ></path>
-                <path
-                  d="M172 256c18 21 42 31 73 31 32 0 58-10 75-31l15 86H158z"
-                  fill="#fff1a4"
-                  opacity="0.34"
-                ></path>
-                <rect x="203" y="292" width="34" height="82" rx="16" fill="#275f54"></rect>
-                <rect x="251" y="292" width="34" height="82" rx="16" fill="#275f54"></rect>
-                <rect x="195" y="368" width="48" height="18" rx="9" fill="#183f39"></rect>
-                <rect x="243" y="368" width="48" height="18" rx="9" fill="#183f39"></rect>
-
-                <path
-                  d="M190 258c-35 10-58 40-69 90"
-                  fill="none"
-                  stroke="#f4cda1"
-                  stroke-linecap="round"
-                  stroke-width="22"
-                ></path>
-                <path
-                  d="M292 252c31 11 54 40 71 92"
-                  fill="none"
-                  stroke="#f4cda1"
-                  stroke-linecap="round"
-                  stroke-width="22"
-                ></path>
-                <path
-                  d="M361 342l38-29"
-                  fill="none"
-                  stroke="#f4cda1"
-                  stroke-linecap="round"
-                  stroke-width="20"
-                ></path>
-                <circle cx="403" cy="310" r="19" fill="#f4cda1"></circle>
-                <path
-                  d="M121 350l-31 16"
-                  fill="none"
-                  stroke="#f4cda1"
-                  stroke-linecap="round"
-                  stroke-width="20"
-                ></path>
-                <rect x="42" y="336" width="94" height="58" rx="18" fill="#fff7d1"></rect>
-                <path
-                  d="M60 359c18-11 36-11 51 0 13-9 26-9 38 0"
-                  fill="none"
-                  stroke="#5c8a72"
-                  stroke-linecap="round"
-                  stroke-width="6"
-                ></path>
-                <circle cx="74" cy="368" r="5" fill="#5c8a72"></circle>
-                <circle cx="116" cy="367" r="5" fill="#5c8a72"></circle>
-
-                <circle cx="246" cy="156" r="62" fill="#f6d4aa"></circle>
-                <path
-                  d="M185 146c8-35 31-53 61-53 37 0 63 24 66 61-17-18-41-30-72-30-24 0-44 8-55 22z"
-                  fill="url(#hatGlow)"
-                ></path>
-                <ellipse cx="247" cy="155" rx="84" ry="15" fill="#157966"></ellipse>
-                <circle cx="223" cy="152" r="6" fill="#214336"></circle>
-                <circle cx="270" cy="152" r="6" fill="#214336"></circle>
-                <path
-                  d="M224 182c11 12 34 12 45 0"
-                  fill="none"
-                  stroke="#214336"
-                  stroke-linecap="round"
-                  stroke-width="6"
-                ></path>
-                <circle cx="207" cy="170" r="8" fill="#f6b1a8" opacity="0.8"></circle>
-                <circle cx="287" cy="170" r="8" fill="#f6b1a8" opacity="0.8"></circle>
-
-                <rect x="204" y="228" width="82" height="26" rx="13" fill="#fff0c7"></rect>
-                <circle cx="218" cy="241" r="10" fill="#ff8c44"></circle>
-                <circle cx="246" cy="241" r="10" fill="#ffd15e"></circle>
-                <circle cx="274" cy="241" r="10" fill="#4cc291"></circle>
-                <path
-                  d="M332 150c14 10 26 24 35 41"
-                  fill="none"
-                  stroke="#ffffff"
-                  stroke-linecap="round"
-                  stroke-width="10"
-                  opacity="0.55"
-                ></path>
-              </svg>
+              <span class="spark spark-e"></span>
             </div>
 
-            <div class="launch-question-card">
-              <strong>What will you discover first?</strong>
-              <span>Tap start to step through the gate and begin your zoo quest.</span>
+            <img
+              class="launch-hero-image"
+              src="zoo game launching page kid image.png"
+              alt="Happy kid zoo explorer at the zoo entrance"
+            />
+
+            <div class="hero-bush bush-left"></div>
+            <div class="hero-bush bush-right"></div>
+          </div>
+
+          <div class="launch-cta">
+            <div class="launch-button-shell">
+              <button id="start-button" class="primary-button" type="button">
+                Start Exploring
+              </button>
             </div>
+            <p class="launch-secondary">Meet Ellie 🐘 &amp; Leo 🦁</p>
+          </div>
+
+          <div class="floating-leaves" aria-hidden="true">
+            <span class="float-leaf leaf-1"></span>
+            <span class="float-leaf leaf-2"></span>
+            <span class="float-leaf leaf-3"></span>
+            <span class="float-leaf leaf-4"></span>
+            <span class="float-leaf leaf-5"></span>
           </div>
         </section>
 
