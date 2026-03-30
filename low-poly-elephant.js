@@ -66,21 +66,30 @@ function createEar(outerMaterial, innerMaterial, side) {
   return ear;
 }
 
-function createEye(zOffset, eyeMaterial, highlightMaterial) {
+function createEye(zOffset, scleraMaterial, pupilMaterial, highlightMaterial) {
   const eye = new THREE.Group();
 
-  const pupil = createMesh(
-    new THREE.SphereGeometry(0.11, 6, 6),
-    eyeMaterial,
+  const sclera = createMesh(
+    new THREE.SphereGeometry(0.2, 7, 7),
+    scleraMaterial,
   );
-  pupil.position.z = zOffset;
+  sclera.scale.set(1.18, 0.96, 0.72);
+  sclera.position.set(0.02, 0, zOffset);
+  eye.add(sclera);
+
+  const pupil = createMesh(
+    new THREE.SphereGeometry(0.095, 6, 6),
+    pupilMaterial,
+  );
+  pupil.scale.set(0.8, 0.88, 0.5);
+  pupil.position.set(0.13, -0.01, zOffset);
   eye.add(pupil);
 
   const highlight = createMesh(
-    new THREE.SphereGeometry(0.03, 5, 5),
+    new THREE.SphereGeometry(0.035, 5, 5),
     highlightMaterial,
   );
-  highlight.position.set(0.05, 0.05, zOffset + Math.sign(zOffset) * 0.015);
+  highlight.position.set(0.17, 0.055, zOffset + Math.sign(zOffset) * 0.02);
   eye.add(highlight);
 
   return eye;
@@ -89,21 +98,24 @@ function createEye(zOffset, eyeMaterial, highlightMaterial) {
 function createTusk(zOffset, tuskMaterial) {
   const tusk = new THREE.Group();
 
+  const root = new THREE.Group();
+  root.position.set(0.5, -0.1, zOffset);
+  root.rotation.set(0.16, Math.sign(zOffset) * 0.22, -Math.PI * 0.5 + 0.22);
+  tusk.add(root);
+
   const shaft = createMesh(
-    new THREE.CylinderGeometry(0.06, 0.16, 1.1, 6),
+    new THREE.CylinderGeometry(0.07, 0.16, 0.98, 6),
     tuskMaterial,
   );
-  shaft.rotation.set(0.16, Math.sign(zOffset) * 0.22, -Math.PI * 0.5 + 0.22);
-  shaft.position.set(0.52, -0.1, zOffset);
-  tusk.add(shaft);
+  shaft.position.y = 0.49;
+  root.add(shaft);
 
   const tip = createMesh(
-    new THREE.ConeGeometry(0.08, 0.28, 6),
+    new THREE.ConeGeometry(0.085, 0.42, 6),
     tuskMaterial,
   );
-  tip.rotation.set(0.16, Math.sign(zOffset) * 0.22, -Math.PI * 0.5 + 0.22);
-  tip.position.set(1.02, -0.24, zOffset + Math.sign(zOffset) * 0.02);
-  tusk.add(tip);
+  tip.position.y = 0.98;
+  root.add(tip);
 
   return tusk;
 }
@@ -149,6 +161,12 @@ export function createLowPolyElephant() {
     roughness: 0.82,
     emissive: 0xb8b1a2,
     emissiveIntensity: 0.015,
+  });
+  const eyeWhiteMaterial = createMaterial(0xf6f1e8, {
+    roughness: 0.48,
+    emissive: 0xc4bcae,
+    emissiveIntensity: 0.024,
+    flatShading: false,
   });
   const eyeMaterial = createMaterial(0x171315, {
     roughness: 0.25,
@@ -202,6 +220,7 @@ export function createLowPolyElephant() {
 
   const headPivot = new THREE.Group();
   headPivot.position.set(2.15, 2.38, 0);
+  headPivot.rotation.y = -0.78;
   headPivot.rotation.z = -0.02;
   rig.add(headPivot);
 
@@ -232,13 +251,24 @@ export function createLowPolyElephant() {
   rightEar.rotation.y = -Math.PI * 0.55;
   headPivot.add(rightEar);
 
-  const leftEye = createEye(0.3, eyeMaterial, highlightMaterial);
-  leftEye.position.set(0.76, 0.1, 0);
+  const leftEye = createEye(0.24, eyeWhiteMaterial, eyeMaterial, highlightMaterial);
+  leftEye.position.set(1.02, 0.22, 0);
   headPivot.add(leftEye);
 
-  const rightEye = createEye(-0.3, eyeMaterial, highlightMaterial);
-  rightEye.position.set(0.76, 0.1, 0);
+  const rightEye = createMesh(
+    new THREE.SphereGeometry(0.11, 6, 6),
+    eyeMaterial,
+  );
+  rightEye.scale.set(0.9, 1, 0.62);
+  rightEye.position.set(0.8, 0.36, 0.16);
   headPivot.add(rightEye);
+
+  const rightEyeHighlight = createMesh(
+    new THREE.SphereGeometry(0.03, 5, 5),
+    highlightMaterial,
+  );
+  rightEyeHighlight.position.set(0.86, 0.41, 0.18);
+  headPivot.add(rightEyeHighlight);
 
   const leftTusk = createTusk(0.45, tuskMaterial);
   leftTusk.position.set(0.25, -0.38, 0);
