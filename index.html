@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zoo Explorer 3D</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%90%98%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <div id="scene-root" aria-hidden="true"></div>
+
+      <div id="ui-layer">
+        <section id="start-screen" class="screen-card">
+          <p class="eyebrow">3D Learning Adventure</p>
+          <h1>Zoo Explorer 3D</h1>
+          <p class="subtitle">Explore and learn about animals</p>
+          <button id="start-button" class="primary-button" type="button">
+            Start Exploring
+          </button>
+        </section>
+
+        <div id="hud" class="hidden">
+          <section id="progress-card" class="hud-card">
+            <p class="hud-label">Explorer Progress</p>
+            <p id="progress-text">
+              Animals discovered:
+              <strong id="progress-count">0 / 2</strong>
+            </p>
+          </section>
+
+          <section id="minimap-card" class="hud-card">
+            <p class="hud-label">Zoo Map</p>
+            <div id="minimap" aria-label="Mini zoo map">
+              <div id="map-player" class="map-player"></div>
+            </div>
+          </section>
+
+          <section id="control-hint" class="hud-card control-hint">
+            WASD or arrow keys to move. Drag to look around.
+          </section>
+
+          <div id="interaction-hint" class="hidden">Tap/Click me</div>
+
+          <div id="touch-controls" class="hidden">
+            <div id="joystick-area" class="joystick" aria-label="Movement pad">
+              <div class="joystick-ring">
+                <div id="joystick-knob" class="joystick-knob"></div>
+              </div>
+              <span class="joystick-label">Move</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="panel-backdrop" class="modal-backdrop hidden">
+          <section
+            id="animal-panel"
+            class="panel-card"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="panel-title"
+          >
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow" id="panel-kicker">Animal Friend</p>
+                <h2 id="panel-title">Ellie the Elephant</h2>
+              </div>
+              <button
+                id="close-panel"
+                class="ghost-button"
+                type="button"
+                aria-label="Close interaction panel"
+              >
+                Close
+              </button>
+            </div>
+
+            <div id="interaction-buttons" class="interaction-buttons"></div>
+
+            <div id="response-area" class="response-area">
+              Tap a button to learn about this animal.
+            </div>
+          </section>
+        </div>
+
+        <div id="popup-backdrop" class="modal-backdrop hidden">
+          <section
+            id="reward-popup"
+            class="popup-card hidden"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="reward-title"
+          >
+            <p class="eyebrow">Fact Unlocked!</p>
+            <h2 id="reward-title">You learned something about Ellie!</h2>
+            <p id="reward-message">Great exploring.</p>
+            <button id="reward-close" class="primary-button" type="button">
+              Keep Exploring
+            </button>
+          </section>
+
+          <section
+            id="completion-popup"
+            class="popup-card hidden"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="completion-title"
+          >
+            <p class="eyebrow">Zoo Complete</p>
+            <h2 id="completion-title">You explored the zoo!</h2>
+            <p id="completion-message">2 Animals discovered!</p>
+            <button id="completion-close" class="primary-button" type="button">
+              Play On
+            </button>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <script defer src="app.bundle.js"></script>
+  </body>
+</html>
