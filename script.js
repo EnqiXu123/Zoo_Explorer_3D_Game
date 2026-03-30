@@ -426,12 +426,29 @@ function addPath() {
 }
 
 function addSun() {
-  const sun = new THREE.Mesh(
-    new THREE.SphereGeometry(2.6, 24, 24),
-    new THREE.MeshBasicMaterial({ color: 0xffe08c }),
+  const sunGroup = new THREE.Group();
+
+  const sunGlow = new THREE.Mesh(
+    new THREE.SphereGeometry(4.3, 20, 20),
+    new THREE.MeshBasicMaterial({
+      color: 0xfff0a8,
+      transparent: true,
+      opacity: 0.28,
+      depthWrite: false,
+    }),
   );
-  sun.position.set(-22, 24, -26);
-  runtime.scene.add(sun);
+  sunGroup.add(sunGlow);
+
+  const sun = new THREE.Mesh(
+    new THREE.SphereGeometry(3.2, 24, 24),
+    new THREE.MeshBasicMaterial({ color: 0xffef57 }),
+  );
+  sunGroup.add(sun);
+
+  // Keep the sun lower and slightly closer to the zoo so it stays visible in
+  // the default camera framing.
+  sunGroup.position.set(-18, 16, -18);
+  runtime.scene.add(sunGroup);
 }
 
 function addTrees() {
