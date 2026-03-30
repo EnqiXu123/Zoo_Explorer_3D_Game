@@ -211,6 +211,8 @@ button {
 .launch-art {
   display: grid;
   place-items: center;
+  padding: 2.5rem 1.4rem 1rem;
+  overflow: visible;
 }
 
 .explorer-card {
@@ -225,6 +227,7 @@ button {
   box-shadow:
     0 24px 42px rgba(33, 67, 54, 0.18),
     inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+  z-index: 1;
 }
 
 .explorer-card::before {
@@ -254,18 +257,20 @@ button {
   font-weight: 800;
   color: #16423b;
   box-shadow: 0 14px 26px rgba(33, 67, 54, 0.15);
+  z-index: 3;
+  white-space: nowrap;
 }
 
 .sticker-sun {
-  top: 0;
-  right: 8%;
+  top: 0.35rem;
+  right: -0.2rem;
   background: #fff5af;
   transform: rotate(6deg);
 }
 
 .sticker-map {
-  left: 2%;
-  bottom: 5.5rem;
+  left: -0.3rem;
+  bottom: 7.4rem;
   background: #ffcde3;
   transform: rotate(-7deg);
 }
@@ -677,12 +682,13 @@ button {
   }
 
   .sticker-sun {
-    right: 0;
+    top: 0.15rem;
+    right: 0.1rem;
   }
 
   .sticker-map {
-    left: 0;
-    bottom: 4.8rem;
+    left: 0.15rem;
+    bottom: 6.2rem;
   }
 
   #progress-card {
@@ -743,6 +749,10 @@ button {
     padding: 1rem 0.85rem 1.3rem;
   }
 
+  .launch-art {
+    padding: 2.1rem 0.6rem 0.8rem;
+  }
+
   .launch-tag {
     margin-bottom: 0.8rem;
     font-size: 0.74rem;
@@ -761,6 +771,12 @@ button {
     width: 100%;
     text-align: center;
     font-size: 0.96rem;
+  }
+
+  .sticker-sun,
+  .sticker-map {
+    font-size: 0.82rem;
+    padding: 0.62rem 0.84rem;
   }
 
   #progress-card {
