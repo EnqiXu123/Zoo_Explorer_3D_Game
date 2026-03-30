@@ -27,14 +27,14 @@ function createEye(eyeMaterial, highlightMaterial) {
   const eye = new THREE.Group();
 
   const pupil = createMesh(
-    new THREE.SphereGeometry(0.09, 6, 6),
+    new THREE.SphereGeometry(0.16, 6, 6),
     eyeMaterial,
   );
-  pupil.scale.set(0.9, 1, 0.65);
+  pupil.scale.set(0.98, 1, 0.7);
   eye.add(pupil);
 
   const highlight = createMesh(
-    new THREE.SphereGeometry(0.024, 5, 5),
+    new THREE.SphereGeometry(0.016, 5, 5),
     highlightMaterial,
   );
   highlight.position.set(0.03, 0.04, 0.03);
@@ -213,7 +213,7 @@ export function createLowPolyLion() {
 
   const headPivot = new THREE.Group();
   headPivot.position.set(1.98, 2.06, 0);
-  headPivot.rotation.y = -0.08;
+  headPivot.rotation.y = 0;
   rig.add(headPivot);
 
   const manePivot = new THREE.Group();
@@ -261,11 +261,11 @@ export function createLowPolyLion() {
   headPivot.add(nose);
 
   const leftEye = createEye(eyeMaterial, highlightMaterial);
-  leftEye.position.set(0.72, 0.08, 0.22);
+  leftEye.position.set(0.8, 0.12, 0.24);
   headPivot.add(leftEye);
 
   const rightEye = createEye(eyeMaterial, highlightMaterial);
-  rightEye.position.set(0.72, 0.08, -0.22);
+  rightEye.position.set(0.8, 0.12, -0.24);
   headPivot.add(rightEye);
 
   const leftEar = createEar(coatLight, coatMid, 1);

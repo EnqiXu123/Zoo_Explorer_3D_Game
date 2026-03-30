@@ -4,6 +4,10 @@ import {
   updateElephantAnimation,
 } from "./low-poly-elephant.js";
 import {
+  createExplorerCharacter,
+  updateExplorerAnimation,
+} from "./low-poly-explorer.js";
+import {
   createLowPolyLion,
   updateLionAnimation,
 } from "./low-poly-lion.js";
@@ -143,6 +147,7 @@ const state = {
   pendingCompletion: false,
   activePopup: null,
   popupTimer: null,
+  playerMoving: false,
   keyboard: {
     forward: false,
     back: false,
@@ -178,11 +183,14 @@ const runtime = {
   pointerNdc: new THREE.Vector2(),
   player: null,
   playerHead: null,
+  playerLookTarget: null,
   animalObjects: new Map(),
   mapMarkers: new Map(),
   tempVector: new THREE.Vector3(),
   tempVector2: new THREE.Vector3(),
+  tempVector3: new THREE.Vector3(),
   targetCameraPosition: new THREE.Vector3(),
+  targetLookTarget: new THREE.Vector3(),
 };
 
 init();
@@ -537,7 +545,7 @@ function createSceneLion(animal) {
   // Scale and angle the lion to feel balanced with the elephant and readable
   // from the game's default camera.
   lion.scale.setScalar(0.92);
-  lion.rotation.y = 0.22;
+  lion.rotation.y = Math.PI + 0.04;
   tagAnimalHierarchy(lion, animal.id);
 
   return lion;
@@ -577,54 +585,13 @@ function getAnimalSceneConfig(animalId) {
 }
 
 function addPlayer() {
-  const player = new THREE.Group();
-
-  const body = new THREE.Mesh(
-    new THREE.CapsuleGeometry(0.38, 0.8, 4, 8),
-    new THREE.MeshStandardMaterial({
-      color: 0xfff7e6,
-      roughness: 0.75,
-      emissive: 0x32443e,
-      emissiveIntensity: 0.04,
-    }),
-  );
-  body.castShadow = true;
-  body.receiveShadow = true;
-  body.position.y = 1.1;
-  player.add(body);
-
-  const shirt = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.46, 0.5, 0.92, 16),
-    new THREE.MeshStandardMaterial({
-      color: 0xff8f4f,
-      roughness: 0.82,
-      emissive: 0x5e2c12,
-      emissiveIntensity: 0.05,
-    }),
-  );
-  shirt.position.y = 1.1;
-  shirt.castShadow = true;
-  player.add(shirt);
-
-  const head = new THREE.Mesh(
-    new THREE.SphereGeometry(0.34, 18, 18),
-    new THREE.MeshStandardMaterial({ color: 0xf1d6b8, roughness: 0.86 }),
-  );
-  head.position.y = 1.95;
-  head.castShadow = true;
-  player.add(head);
-
-  const hat = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.38, 0.42, 0.14, 20),
-    new THREE.MeshStandardMaterial({ color: 0x2d5747, roughness: 0.84 }),
-  );
-  hat.position.y = 2.18;
-  hat.castShadow = true;
-  player.add(hat);
+  const player = createExplorerCharacter();
 
   player.position.copy(state.playerPosition);
+  player.rotation.y = Math.PI;
   runtime.player = player;
-  runtime.playerHead = head;
+  runtime.playerHead = player.userData.lookTarget ?? null;
+  runtime.playerLookTarget = player.userData.lookTarget ?? null;
   runtime.scene.add(player);
 }
 
@@ -1047,6 +1014,7 @@ function animate(timestamp) {
   const elapsed = runtime.timer.getElapsed();
 
   updateMovement(delta);
+  updateExplorer(elapsed);
   updateCamera(delta);
   updateAnimals(elapsed);
   updateNearestAnimal();
@@ -1058,6 +1026,7 @@ function animate(timestamp) {
 
 function updateMovement(delta) {
   if (state.gameState !== GAME_STATES.EXPLORING) {
+    state.playerMoving = false;
     runtime.player.position.copy(state.playerPosition);
     return;
   }
@@ -1072,6 +1041,7 @@ function updateMovement(delta) {
     state.joystick.y;
 
   const inputLength = Math.hypot(horizontal, vertical);
+  state.playerMoving = inputLength > 0.01;
   if (inputLength > 0.01) {
     const moveX = horizontal / Math.max(1, inputLength);
     const moveZ = vertical / Math.max(1, inputLength);
@@ -1116,6 +1086,14 @@ function updateMovement(delta) {
   runtime.player.position.copy(state.playerPosition);
 }
 
+function updateExplorer(elapsed) {
+  if (!runtime.player) {
+    return;
+  }
+
+  updateExplorerAnimation(runtime.player, elapsed, state.playerMoving);
+}
+
 function updateCamera(delta) {
   const forward = runtime.tempVector2.set(
     -Math.sin(state.look.yaw),
@@ -1127,18 +1105,22 @@ function updateCamera(delta) {
 
   runtime.targetCameraPosition
     .copy(state.playerPosition)
-    .addScaledVector(forward, -horizontalDistance)
-    .add(new THREE.Vector3(0, verticalDistance, 0));
+    .addScaledVector(forward, -horizontalDistance);
+  runtime.targetCameraPosition.y += verticalDistance;
 
   const alpha = 1 - Math.exp(-CAMERA_SMOOTHING * delta);
   runtime.camera.position.lerp(runtime.targetCameraPosition, alpha);
 
-  const lookTarget = new THREE.Vector3(
-    state.playerPosition.x + forward.x * 2.4,
-    1.65,
-    state.playerPosition.z + forward.z * 2.4,
+  const anchorY = runtime.playerLookTarget
+    ? runtime.playerLookTarget.getWorldPosition(runtime.tempVector3).y
+    : 1.85;
+
+  runtime.targetLookTarget.set(
+    state.playerPosition.x + forward.x * 1.95,
+    anchorY,
+    state.playerPosition.z + forward.z * 1.95,
   );
-  runtime.camera.lookAt(lookTarget);
+  runtime.camera.lookAt(runtime.targetLookTarget);
 }
 
 function updateAnimals(elapsed) {
