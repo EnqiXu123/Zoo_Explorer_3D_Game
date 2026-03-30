@@ -12,16 +12,158 @@
   </head>
   <body>
     <div id="app">
-      <div id="scene-root" aria-hidden="true"></div>
+      <div id="scene-root" class="is-hidden" aria-hidden="true"></div>
 
       <div id="ui-layer">
-        <section id="start-screen" class="screen-card">
-          <p class="eyebrow">3D Learning Adventure</p>
-          <h1>Zoo Explorer 3D</h1>
-          <p class="subtitle">Explore and learn about animals</p>
-          <button id="start-button" class="primary-button" type="button">
-            Start Exploring
-          </button>
+        <section id="start-screen" class="launch-screen">
+          <div class="launch-copy">
+            <p class="launch-tag">Safari Adventure</p>
+            <h1>Zoo Explorer 3D</h1>
+            <p class="launch-subtitle">
+              Open the zoo gates, follow the mini map, and discover surprise
+              animal friends waiting inside.
+            </p>
+
+            <div class="launch-pills" aria-hidden="true">
+              <span>3D Adventure</span>
+              <span>Fact Rewards</span>
+              <span>Tap & Explore</span>
+            </div>
+
+            <div class="launch-actions">
+              <button id="start-button" class="primary-button" type="button">
+                Start Exploring
+              </button>
+              <p class="launch-note">
+                No typing needed. Just tap, wander, and uncover who lives in the
+                zoo.
+              </p>
+            </div>
+          </div>
+
+          <div class="launch-art" aria-hidden="true">
+            <div class="launch-sticker sticker-sun">New Adventure!</div>
+            <div class="launch-sticker sticker-map">Mini map inside</div>
+
+            <div class="explorer-card">
+              <svg
+                class="explorer-illustration"
+                viewBox="0 0 420 420"
+                role="presentation"
+              >
+                <defs>
+                  <linearGradient id="skyGlow" x1="0%" x2="100%" y1="0%" y2="100%">
+                    <stop offset="0%" stop-color="#7fe4ff"></stop>
+                    <stop offset="100%" stop-color="#ffe36e"></stop>
+                  </linearGradient>
+                  <linearGradient id="shirtGlow" x1="0%" x2="100%">
+                    <stop offset="0%" stop-color="#ff8c44"></stop>
+                    <stop offset="100%" stop-color="#ffb347"></stop>
+                  </linearGradient>
+                  <linearGradient id="hatGlow" x1="0%" x2="100%">
+                    <stop offset="0%" stop-color="#1f8d78"></stop>
+                    <stop offset="100%" stop-color="#38b48b"></stop>
+                  </linearGradient>
+                </defs>
+
+                <circle cx="92" cy="84" r="22" fill="#fff1a8"></circle>
+                <circle cx="328" cy="64" r="16" fill="#fff8d9"></circle>
+                <circle cx="344" cy="96" r="8" fill="#ff9f6d"></circle>
+                <circle cx="72" cy="132" r="10" fill="#ff7d61"></circle>
+                <ellipse cx="210" cy="360" rx="118" ry="28" fill="#5ba15d" opacity="0.24"></ellipse>
+                <ellipse cx="210" cy="372" rx="138" ry="24" fill="#8bcb72"></ellipse>
+
+                <path
+                  d="M122 242c16-18 41-27 74-27 31 0 56 9 73 27l20 74H104z"
+                  fill="url(#shirtGlow)"
+                ></path>
+                <path
+                  d="M146 236c14 18 35 28 62 28 30 0 52-10 66-28l18 80H128z"
+                  fill="#ffd269"
+                  opacity="0.28"
+                ></path>
+                <rect x="166" y="272" width="34" height="82" rx="16" fill="#2f6f5e"></rect>
+                <rect x="214" y="272" width="34" height="82" rx="16" fill="#2f6f5e"></rect>
+                <rect x="158" y="346" width="48" height="18" rx="9" fill="#19453f"></rect>
+                <rect x="206" y="346" width="48" height="18" rx="9" fill="#19453f"></rect>
+
+                <path
+                  d="M151 238c-28 10-44 34-49 72"
+                  fill="none"
+                  stroke="#f2c48d"
+                  stroke-linecap="round"
+                  stroke-width="22"
+                ></path>
+                <path
+                  d="M265 235c27 10 46 35 57 75"
+                  fill="none"
+                  stroke="#f2c48d"
+                  stroke-linecap="round"
+                  stroke-width="22"
+                ></path>
+                <path
+                  d="M323 309l36-26"
+                  fill="none"
+                  stroke="#f2c48d"
+                  stroke-linecap="round"
+                  stroke-width="20"
+                ></path>
+                <circle cx="362" cy="280" r="18" fill="#f2c48d"></circle>
+                <path
+                  d="M104 309l-22 27"
+                  fill="none"
+                  stroke="#f2c48d"
+                  stroke-linecap="round"
+                  stroke-width="20"
+                ></path>
+                <rect x="56" y="318" width="74" height="54" rx="16" fill="#fff5cf"></rect>
+                <path
+                  d="M67 338c15-11 29-11 41 0 12-8 23-8 34 0"
+                  fill="none"
+                  stroke="#5c8a72"
+                  stroke-linecap="round"
+                  stroke-width="6"
+                ></path>
+                <circle cx="79" cy="349" r="4" fill="#5c8a72"></circle>
+                <circle cx="112" cy="348" r="4" fill="#5c8a72"></circle>
+
+                <circle cx="210" cy="150" r="62" fill="#f6d4aa"></circle>
+                <path
+                  d="M149 140c8-35 31-53 61-53 37 0 63 24 66 61-17-18-41-30-72-30-24 0-44 8-55 22z"
+                  fill="url(#hatGlow)"
+                ></path>
+                <ellipse cx="211" cy="149" rx="82" ry="14" fill="#1f8d78"></ellipse>
+                <circle cx="187" cy="146" r="6" fill="#214336"></circle>
+                <circle cx="234" cy="146" r="6" fill="#214336"></circle>
+                <path
+                  d="M188 176c11 12 34 12 45 0"
+                  fill="none"
+                  stroke="#214336"
+                  stroke-linecap="round"
+                  stroke-width="6"
+                ></path>
+                <circle cx="171" cy="164" r="8" fill="#f6b1a8" opacity="0.8"></circle>
+                <circle cx="251" cy="164" r="8" fill="#f6b1a8" opacity="0.8"></circle>
+
+                <rect x="168" y="218" width="82" height="26" rx="13" fill="#ffeec5"></rect>
+                <circle cx="182" cy="231" r="10" fill="#ff8c44"></circle>
+                <circle cx="210" cy="231" r="10" fill="#ffd15e"></circle>
+                <circle cx="238" cy="231" r="10" fill="#4cc291"></circle>
+                <path
+                  d="M314 130c18 7 32 19 42 36"
+                  fill="none"
+                  stroke="#ffffff"
+                  stroke-linecap="round"
+                  stroke-width="10"
+                  opacity="0.55"
+                ></path>
+              </svg>
+            </div>
+
+            <div class="launch-question">
+              Who is waiting inside the zoo today?
+            </div>
+          </div>
         </section>
 
         <div id="hud" class="hidden">

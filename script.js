@@ -95,6 +95,7 @@ const animals = [
 ];
 
 const ui = {
+  sceneRoot: document.querySelector("#scene-root"),
   startScreen: document.querySelector("#start-screen"),
   startButton: document.querySelector("#start-button"),
   hud: document.querySelector("#hud"),
@@ -783,9 +784,18 @@ function bindEvents() {
 }
 
 function startGame() {
-  ui.startScreen.classList.add("hidden");
-  ui.hud.classList.remove("hidden");
-  state.gameState = GAME_STATES.EXPLORING;
+  if (state.gameState !== GAME_STATES.START) {
+    return;
+  }
+
+  ui.sceneRoot.classList.remove("is-hidden");
+  ui.startScreen.classList.add("is-exiting");
+
+  window.setTimeout(() => {
+    ui.startScreen.classList.add("hidden");
+    ui.hud.classList.remove("hidden");
+    state.gameState = GAME_STATES.EXPLORING;
+  }, 260);
 }
 
 function onResize() {
