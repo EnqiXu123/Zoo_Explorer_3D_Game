@@ -138,7 +138,6 @@ button {
   transform: scale(0.975);
 }
 
-.launch-map-overlay,
 .launch-header,
 .launch-hero,
 .launch-cta,
@@ -147,284 +146,180 @@ button {
   z-index: 1;
 }
 
-.launch-map-overlay {
+.launch-map-ring {
   position: absolute;
-  inset: 0;
+  inset: 0.4rem 6% 5.6rem;
   pointer-events: none;
-  opacity: 0.08;
-  z-index: 0;
+  z-index: 2;
+  filter: saturate(0.92);
+  mix-blend-mode: multiply;
 }
 
-.map-compass,
-.map-path,
-.map-marker,
-.map-stamp,
-.footprint {
-  position: absolute;
-  color: #285540;
-}
-
-.map-compass {
-  top: 10%;
-  left: 8%;
-  width: 5rem;
-  aspect-ratio: 1;
-  border: 4px solid currentColor;
-  border-radius: 50%;
-}
-
-.compass-large {
-  top: 10%;
-  left: 8%;
-  width: 5rem;
-}
-
-.compass-small {
-  right: 12%;
-  bottom: 24%;
-  width: 3.8rem;
-  border-width: 3px;
-}
-
-.map-compass::before {
+.launch-map-ring::before {
   content: "";
   position: absolute;
-  inset: 0.9rem;
-  border-top: 4px solid currentColor;
-  border-bottom: 4px solid currentColor;
+  inset: 8% 13% 10% 13%;
+  border-radius: 48%;
+  border: 2px dashed rgba(46, 91, 54, 0.12);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 72%);
+}
+
+.launch-map-compass,
+.launch-map-animal,
+.launch-map-accent,
+.launch-footprint,
+.launch-map-journey {
+  position: absolute;
+}
+
+.launch-map-compass {
+  top: 5%;
+  left: 50%;
+  width: 4.9rem;
+  aspect-ratio: 1;
+  border: 3px solid rgba(46, 91, 54, 0.22);
+  border-radius: 50%;
+  background: rgba(255, 248, 229, 0.18);
+  box-shadow: 0 0 0 0.35rem rgba(255, 255, 255, 0.06);
+  transform: translateX(-50%);
+  animation: compassTurn 18s ease-in-out infinite;
+}
+
+.launch-map-compass::before {
+  content: "";
+  position: absolute;
+  inset: 0.85rem;
+  border-top: 3px solid rgba(46, 91, 54, 0.22);
+  border-bottom: 3px solid rgba(46, 91, 54, 0.22);
   border-radius: 50%;
 }
 
-.map-compass::after {
+.launch-map-compass::after {
   content: "";
   position: absolute;
   left: 50%;
-  top: 0.7rem;
-  width: 0.95rem;
-  height: 2rem;
-  background: currentColor;
+  top: 0.62rem;
+  width: 0.8rem;
+  height: 1.8rem;
+  background: rgba(46, 91, 54, 0.22);
   clip-path: polygon(50% 0, 100% 100%, 50% 75%, 0 100%);
   transform: translateX(-50%);
 }
 
-.compass-small::before {
-  inset: 0.7rem;
-  border-top-width: 3px;
-  border-bottom-width: 3px;
+.launch-map-animal {
+  top: 38%;
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  border: 2px solid rgba(46, 91, 54, 0.18);
+  background: rgba(255, 248, 229, 0.68);
+  box-shadow: 0 10px 20px rgba(33, 67, 54, 0.04);
+  font-size: 1.35rem;
+  line-height: 1;
+  opacity: 0.9;
+  text-shadow: 0 1px 4px rgba(255, 255, 255, 0.5);
 }
 
-.compass-small::after {
-  top: 0.55rem;
-  width: 0.72rem;
-  height: 1.45rem;
+.launch-map-elephant {
+  left: 11%;
 }
 
-.map-path {
-  top: 23%;
-  right: 8%;
-  width: 14rem;
-  height: 8rem;
-  border-top: 4px dashed currentColor;
-  border-right: 4px dashed currentColor;
-  border-radius: 0 90% 75% 0 / 0 90% 95% 0;
-  transform: rotate(10deg);
+.launch-map-lion {
+  right: 11%;
 }
 
-.path-one {
-  top: 23%;
-  right: 8%;
-  width: 14rem;
-  height: 8rem;
-  transform: rotate(10deg);
+.launch-map-journey {
+  left: 11%;
+  top: 14%;
+  width: 42%;
+  height: 72%;
+  overflow: visible;
 }
 
-.path-two {
-  left: 10%;
-  top: 46%;
-  width: 10rem;
-  height: 6rem;
-  border-top: 3px dashed currentColor;
-  border-left: 3px dashed currentColor;
-  border-right: 0;
-  border-radius: 80% 0 0 85% / 85% 0 0 80%;
-  transform: rotate(-8deg);
+.launch-map-journey path {
+  fill: none;
+  stroke: rgba(46, 91, 54, 0.24);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-dasharray: 2.4 5.4;
+  animation: journeyTrail 6s ease-in-out infinite;
 }
 
-.map-marker {
-  width: 1.6rem;
-  height: 1.6rem;
+.launch-footprint {
+  width: 1rem;
+  height: 1.5rem;
+  border-radius: 50% 50% 42% 42%;
+  background: rgba(46, 91, 54, 0.24);
+  animation: trailFade 6s ease-in-out infinite;
 }
 
-.marker-x::before,
-.marker-x::after {
+.launch-footprint::before,
+.launch-footprint::after {
+  content: "";
+  position: absolute;
+  top: -0.34rem;
+  width: 0.28rem;
+  height: 0.28rem;
+  border-radius: 50%;
+  background: rgba(46, 91, 54, 0.24);
+  box-shadow:
+    0.32rem -0.12rem 0 rgba(46, 91, 54, 0.24),
+    0.64rem -0.02rem 0 rgba(46, 91, 54, 0.24);
+}
+
+.footprint-one {
+  left: 19%;
+  bottom: 17%;
+  transform: rotate(-26deg);
+}
+
+.footprint-two {
+  left: 25%;
+  bottom: 26%;
+  transform: rotate(-16deg) scale(0.94);
+  animation-delay: 900ms;
+}
+
+.footprint-three {
+  left: 31%;
+  bottom: 36%;
+  transform: rotate(-8deg) scale(0.88);
+  animation-delay: 1800ms;
+}
+
+.launch-map-accent {
+  width: 2.2rem;
+  height: 3.6rem;
+  background: linear-gradient(180deg, rgba(74, 170, 91, 0.24) 0%, rgba(35, 127, 53, 0.18) 100%);
+  border-radius: 100% 0 100% 0;
+  box-shadow: inset 0 -3px 0 rgba(40, 85, 64, 0.05);
+  opacity: 0.78;
+}
+
+.launch-map-accent::after {
   content: "";
   position: absolute;
   left: 50%;
-  top: 50%;
-  width: 100%;
-  height: 0.18rem;
-  border-radius: 999px;
-  background: currentColor;
-  transform-origin: center;
-}
-
-.marker-x::before {
-  transform: translate(-50%, -50%) rotate(45deg);
-}
-
-.marker-x::after {
-  transform: translate(-50%, -50%) rotate(-45deg);
-}
-
-.marker-ring {
-  border: 3px solid currentColor;
-  border-radius: 50%;
-}
-
-.marker-ring::after {
-  content: "";
-  position: absolute;
-  inset: 0.35rem;
-  border-radius: 50%;
-  border: 2px solid currentColor;
-}
-
-.marker-a {
-  right: 21%;
-  top: 33%;
-}
-
-.marker-b {
-  left: 14%;
-  bottom: 28%;
-}
-
-.marker-c {
-  left: 20%;
-  top: 20%;
-}
-
-.marker-d {
-  right: 28%;
-  bottom: 18%;
-}
-
-.map-stamp {
-  opacity: 0.82;
-}
-
-.stamp-binoculars {
-  right: 26%;
   top: 12%;
-  width: 3.4rem;
-  height: 1.8rem;
+  width: 0.12rem;
+  height: 76%;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateX(-50%);
 }
 
-.stamp-binoculars::before,
-.stamp-binoculars::after {
-  content: "";
-  position: absolute;
-  top: 0.25rem;
-  width: 1.15rem;
-  height: 1.15rem;
-  border: 3px solid currentColor;
-  border-radius: 50%;
+.accent-left {
+  left: 23%;
+  top: 58%;
+  transform: rotate(-12deg);
 }
 
-.stamp-binoculars::before {
-  left: 0.25rem;
-}
-
-.stamp-binoculars::after {
-  right: 0.25rem;
-}
-
-.stamp-binoculars span {
-  display: none;
-}
-
-.stamp-binoculars {
-  background:
-    linear-gradient(currentColor, currentColor) center 0.7rem / 1.4rem 0.2rem no-repeat,
-    linear-gradient(currentColor, currentColor) center 1.18rem / 0.45rem 0.6rem no-repeat;
-}
-
-.stamp-paw {
-  left: 30%;
-  bottom: 12%;
-  width: 2.8rem;
-  height: 2.5rem;
-}
-
-.stamp-paw::before,
-.stamp-paw::after {
-  content: "";
-  position: absolute;
-  background: currentColor;
-  border-radius: 50%;
-}
-
-.stamp-paw::before {
-  left: 0.85rem;
-  bottom: 0;
-  width: 1.1rem;
-  height: 1.35rem;
-}
-
-.stamp-paw::after {
-  left: 0.15rem;
-  top: 0.2rem;
-  width: 0.48rem;
-  height: 0.48rem;
-  box-shadow:
-    0.62rem -0.18rem 0 currentColor,
-    1.24rem -0.02rem 0 currentColor,
-    1.86rem 0.24rem 0 currentColor;
-}
-
-.footprint {
-  width: 1.55rem;
-  height: 2.25rem;
-  border-radius: 50% 50% 42% 42%;
-  background: currentColor;
-}
-
-.footprint::before,
-.footprint::after {
-  content: "";
-  position: absolute;
-  top: -0.45rem;
-  width: 0.42rem;
-  height: 0.42rem;
-  border-radius: 50%;
-  background: currentColor;
-  box-shadow:
-    0.42rem -0.16rem 0 currentColor,
-    0.84rem -0.05rem 0 currentColor;
-}
-
-.footprint-a {
-  left: 18%;
-  bottom: 18%;
-  transform: rotate(-22deg);
-}
-
-.footprint-b {
-  left: 22%;
-  bottom: 12%;
-  transform: rotate(-14deg) scale(0.95);
-}
-
-.footprint-c {
-  right: 17%;
-  top: 19%;
-  transform: rotate(18deg) scale(0.9);
-}
-
-.footprint-d {
-  right: 13%;
-  top: 25%;
-  transform: rotate(24deg) scale(0.82);
+.accent-right {
+  right: 23%;
+  top: 58%;
+  transform: rotate(12deg) scaleX(-1);
 }
 
 .launch-header {
@@ -495,6 +390,7 @@ button {
   min-height: min(50vh, 35rem);
   padding-bottom: 7rem;
   margin-top: -0.4rem;
+  isolation: isolate;
 }
 
 .hero-glow {
@@ -506,6 +402,7 @@ button {
   filter: blur(8px);
   animation: glowPulse 4.4s ease-in-out infinite;
   pointer-events: none;
+  z-index: 1;
 }
 
 .launch-hero-image {
@@ -520,7 +417,7 @@ button {
     0 24px 44px rgba(70, 80, 43, 0.24),
     0 10px 0 rgba(255, 255, 255, 0.28);
   animation: heroFloat 5.2s ease-in-out infinite;
-  z-index: 3;
+  z-index: 4;
   pointer-events: none;
 }
 
@@ -662,7 +559,7 @@ button {
     radial-gradient(circle at 72% 52%, #79cb57 0 18%, transparent 19%),
     linear-gradient(180deg, #6bb34f 0%, #458d3b 100%);
   box-shadow: 0 10px 16px rgba(54, 94, 48, 0.12);
-  z-index: 2;
+  z-index: 3;
   pointer-events: none;
 }
 
@@ -1141,6 +1038,41 @@ button {
   }
 }
 
+@keyframes compassTurn {
+  0%,
+  100% {
+    transform: translateX(-50%) rotate(-2deg);
+  }
+
+  50% {
+    transform: translateX(-50%) rotate(2deg);
+  }
+}
+
+@keyframes journeyTrail {
+  0%,
+  100% {
+    stroke-opacity: 0.85;
+    stroke-dashoffset: 0;
+  }
+
+  50% {
+    stroke-opacity: 1;
+    stroke-dashoffset: -6;
+  }
+}
+
+@keyframes trailFade {
+  0%,
+  100% {
+    opacity: 0.28;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+}
+
 @keyframes heroFloat {
   0%,
   100% {
@@ -1325,13 +1257,58 @@ button {
     font-size: 1.25rem;
   }
 
-  .map-compass {
-    width: 3.7rem;
+  .launch-map-ring {
+    inset: 0.35rem 10% 5.2rem;
   }
 
-  .map-path {
-    width: 10rem;
-    height: 5.2rem;
+  .launch-map-ring::before {
+    inset: 9% 11% 11% 11%;
+  }
+
+  .launch-map-compass {
+    width: 4rem;
+  }
+
+  .launch-map-animal {
+    top: 39%;
+    width: 2.7rem;
+    height: 2.7rem;
+    font-size: 1.18rem;
+  }
+
+  .launch-map-elephant {
+    left: 14%;
+  }
+
+  .launch-map-lion {
+    right: 14%;
+  }
+
+  .launch-map-journey {
+    left: 12%;
+    top: 16%;
+    width: 42%;
+    height: 68%;
+  }
+
+  .launch-map-accent {
+    width: 1.95rem;
+    height: 3.1rem;
+  }
+
+  .accent-left {
+    left: 24%;
+    top: 59%;
+  }
+
+  .accent-right {
+    right: 24%;
+    top: 59%;
+  }
+
+  .launch-footprint {
+    width: 0.88rem;
+    height: 1.32rem;
   }
 
   .launch-screen .primary-button {
@@ -1404,6 +1381,10 @@ button {
     padding-bottom: 6.2rem;
   }
 
+  .launch-map-ring {
+    inset: 0.3rem 6% 5rem;
+  }
+
   .launch-cta {
     bottom: 0.95rem;
   }
@@ -1462,6 +1443,76 @@ button {
   .hero-bird,
   .hero-butterfly {
     font-size: 1.1rem;
+  }
+
+  .launch-map-ring {
+    inset: 0.2rem 13% 4.95rem;
+  }
+
+  .launch-map-ring::before {
+    inset: 10% 9% 14% 9%;
+  }
+
+  .launch-map-compass {
+    top: 8%;
+    width: 3.35rem;
+  }
+
+  .launch-map-animal {
+    top: 40%;
+    width: 2.35rem;
+    height: 2.35rem;
+    font-size: 1.16rem;
+  }
+
+  .launch-map-elephant {
+    left: 17%;
+  }
+
+  .launch-map-lion {
+    right: 17%;
+  }
+
+  .launch-map-journey {
+    left: 12%;
+    top: 18%;
+    width: 46%;
+    height: 64%;
+  }
+
+  .launch-map-accent {
+    width: 1.6rem;
+    height: 2.6rem;
+  }
+
+  .accent-left {
+    left: 25%;
+    top: 60%;
+  }
+
+  .accent-right {
+    right: 25%;
+    top: 60%;
+  }
+
+  .launch-footprint {
+    width: 0.78rem;
+    height: 1.14rem;
+  }
+
+  .footprint-one {
+    left: 20%;
+    bottom: 16%;
+  }
+
+  .footprint-two {
+    left: 26%;
+    bottom: 25%;
+  }
+
+  .footprint-three {
+    left: 32%;
+    bottom: 35%;
   }
 
   .spark-e,
