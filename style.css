@@ -181,7 +181,6 @@ button {
 
 .launch-map-compass,
 .launch-map-animal,
-.launch-map-accent,
 .launch-footprint,
 .launch-map-journey {
   position: absolute;
@@ -337,39 +336,6 @@ button {
   transform: rotate(8deg) scale(0.88);
 }
 
-.launch-map-accent {
-  width: 2.2rem;
-  height: 3.6rem;
-  background: linear-gradient(180deg, rgba(74, 170, 91, 0.24) 0%, rgba(35, 127, 53, 0.18) 100%);
-  border-radius: 100% 0 100% 0;
-  box-shadow: inset 0 -3px 0 rgba(40, 85, 64, 0.05);
-  opacity: 0.78;
-}
-
-.launch-map-accent::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 12%;
-  width: 0.12rem;
-  height: 76%;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.18);
-  transform: translateX(-50%);
-}
-
-.accent-left {
-  left: 7%;
-  top: 60%;
-  transform: rotate(-12deg);
-}
-
-.accent-right {
-  right: 7%;
-  top: 60%;
-  transform: rotate(12deg) scaleX(-1);
-}
-
 .launch-header {
   text-align: center;
   width: min(100%, 50rem);
@@ -469,64 +435,6 @@ button {
   pointer-events: none;
 }
 
-.hero-leaf-corner {
-  position: absolute;
-  top: 0.15rem;
-  width: 8.8rem;
-  height: 6.5rem;
-  z-index: 4;
-  pointer-events: none;
-}
-
-.corner-left {
-  left: max(0.5rem, 2%);
-}
-
-.corner-right {
-  right: max(0.5rem, 2%);
-  transform: scaleX(-1);
-}
-
-.decor-leaf {
-  position: absolute;
-  display: block;
-  width: 2.9rem;
-  height: 5rem;
-  background: linear-gradient(180deg, #4bb25d 0%, #237f35 100%);
-  border-radius: 100% 0 100% 0;
-  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.08);
-}
-
-.decor-leaf::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 12%;
-  width: 0.18rem;
-  height: 76%;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.35);
-  transform: translateX(-50%);
-}
-
-.leaf-a {
-  left: 0.2rem;
-  bottom: 0.6rem;
-  transform: rotate(-18deg);
-}
-
-.leaf-b {
-  left: 2.4rem;
-  bottom: 0;
-  transform: rotate(6deg);
-}
-
-.leaf-c {
-  left: 5rem;
-  bottom: 0.85rem;
-  transform: rotate(22deg);
-}
-
 .hero-bird,
 .hero-butterfly {
   position: absolute;
@@ -543,10 +451,73 @@ button {
 }
 
 .hero-butterfly {
-  left: 12%;
-  top: 26%;
-  font-size: 1.45rem;
-  animation: butterflyFlutter 4.2s ease-in-out infinite;
+  left: max(0.65rem, 3%);
+  top: 2.2%;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  width: 5.4rem;
+  height: 4.2rem;
+  animation: butterflyHover 4.4s ease-in-out infinite;
+  filter: drop-shadow(0 10px 16px rgba(48, 74, 44, 0.16));
+}
+
+.butterfly-wing,
+.butterfly-body {
+  display: block;
+}
+
+.butterfly-wing {
+  width: 2.2rem;
+  height: 3.2rem;
+  background:
+    radial-gradient(circle at 32% 34%, rgba(255, 255, 255, 0.9) 0 10%, transparent 11%),
+    radial-gradient(circle at 58% 64%, rgba(69, 192, 255, 0.92) 0 24%, rgba(33, 146, 214, 0.95) 25% 55%, rgba(19, 99, 168, 0.96) 56% 100%);
+  border: 2px solid rgba(18, 86, 140, 0.38);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.12);
+}
+
+.wing-left {
+  border-radius: 78% 18% 64% 42%;
+  transform-origin: 95% 50%;
+  animation: wingLeftFlap 0.95s ease-in-out infinite;
+}
+
+.wing-right {
+  border-radius: 18% 78% 42% 64%;
+  transform-origin: 5% 50%;
+  animation: wingRightFlap 0.95s ease-in-out infinite;
+}
+
+.butterfly-body {
+  position: relative;
+  width: 0.62rem;
+  height: 2.9rem;
+  margin: 0 -0.08rem;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #284c35 0%, #173220 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.butterfly-body::before,
+.butterfly-body::after {
+  content: "";
+  position: absolute;
+  top: -0.38rem;
+  width: 0.08rem;
+  height: 0.95rem;
+  border-radius: 999px;
+  background: #284c35;
+}
+
+.butterfly-body::before {
+  left: 0.12rem;
+  transform: rotate(-24deg);
+}
+
+.butterfly-body::after {
+  right: 0.12rem;
+  transform: rotate(24deg);
 }
 
 .hero-sparkles {
@@ -1151,14 +1122,36 @@ button {
   }
 }
 
-@keyframes butterflyFlutter {
+@keyframes butterflyHover {
   0%,
   100% {
-    transform: translateY(0) translateX(0) rotate(-5deg);
+    transform: translateY(0) translateX(0) rotate(-10deg);
   }
 
   50% {
-    transform: translateY(-10px) translateX(4px) rotate(5deg);
+    transform: translateY(-8px) translateX(3px) rotate(-4deg);
+  }
+}
+
+@keyframes wingLeftFlap {
+  0%,
+  100% {
+    transform: rotate(-18deg) scaleX(1);
+  }
+
+  50% {
+    transform: rotate(10deg) scaleX(0.9);
+  }
+}
+
+@keyframes wingRightFlap {
+  0%,
+  100% {
+    transform: rotate(18deg) scaleX(1);
+  }
+
+  50% {
+    transform: rotate(-10deg) scaleX(0.9);
   }
 }
 
@@ -1285,17 +1278,6 @@ button {
     width: min(100%, 16.4rem);
   }
 
-  .hero-leaf-corner {
-    width: 7rem;
-    height: 5.2rem;
-    top: 0.4rem;
-  }
-
-  .decor-leaf {
-    width: 2.3rem;
-    height: 4rem;
-  }
-
   .hero-bush {
     width: 5.8rem;
     height: 2.8rem;
@@ -1308,9 +1290,15 @@ button {
   }
 
   .hero-butterfly {
-    left: 5%;
-    top: 18%;
-    font-size: 1.25rem;
+    left: 1.5%;
+    top: 3.5%;
+    width: 4.7rem;
+    height: 3.7rem;
+  }
+
+  .butterfly-wing {
+    width: 1.95rem;
+    height: 2.8rem;
   }
 
   .launch-map-ring {
@@ -1355,21 +1343,6 @@ button {
     top: 20%;
     width: 21%;
     height: 54%;
-  }
-
-  .launch-map-accent {
-    width: 1.95rem;
-    height: 3.1rem;
-  }
-
-  .accent-left {
-    left: 7%;
-    top: 61%;
-  }
-
-  .accent-right {
-    right: 7%;
-    top: 61%;
   }
 
   .launch-footprint {
@@ -1521,16 +1494,6 @@ button {
     width: min(78vw, 18rem);
   }
 
-  .hero-leaf-corner {
-    width: 5.7rem;
-    height: 4.5rem;
-  }
-
-  .decor-leaf {
-    width: 1.95rem;
-    height: 3.3rem;
-  }
-
   .hero-bush {
     width: 4.9rem;
     height: 2.4rem;
@@ -1538,7 +1501,31 @@ button {
 
   .hero-bird,
   .hero-butterfly {
-    font-size: 1.1rem;
+    filter: drop-shadow(0 6px 10px rgba(48, 74, 44, 0.16));
+  }
+
+  .hero-butterfly {
+    left: -1%;
+    top: 4%;
+    width: 3.95rem;
+    height: 3.1rem;
+  }
+
+  .butterfly-wing {
+    width: 1.62rem;
+    height: 2.35rem;
+    border-width: 1.6px;
+  }
+
+  .butterfly-body {
+    width: 0.5rem;
+    height: 2.2rem;
+  }
+
+  .butterfly-body::before,
+  .butterfly-body::after {
+    top: -0.32rem;
+    height: 0.78rem;
   }
 
   .launch-map-ring {
@@ -1584,21 +1571,6 @@ button {
     top: 22%;
     width: 14%;
     height: 50%;
-  }
-
-  .launch-map-accent {
-    width: 1.6rem;
-    height: 2.6rem;
-  }
-
-  .accent-left {
-    left: 2%;
-    top: 62%;
-  }
-
-  .accent-right {
-    right: 2%;
-    top: 62%;
   }
 
   .launch-footprint {
