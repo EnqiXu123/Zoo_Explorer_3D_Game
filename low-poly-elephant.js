@@ -48,17 +48,18 @@ function createEar(outerMaterial, innerMaterial, side) {
   const ear = new THREE.Group();
 
   const outerEar = createMesh(
-    new THREE.CircleGeometry(0.92, 8),
+    new THREE.CircleGeometry(0.92, 12),
     outerMaterial,
   );
   outerEar.rotation.y = side * Math.PI * 0.5;
   ear.add(outerEar);
 
   const innerEar = createMesh(
-    new THREE.CircleGeometry(0.72, 8),
+    new THREE.CircleGeometry(0.72, 12),
     innerMaterial,
   );
-  innerEar.position.z = side * 0.03;
+  // Offset the inner ear along the ear normal so it does not z-fight the outer ear.
+  innerEar.position.x = side * 0.045;
   innerEar.rotation.y = side * Math.PI * 0.5;
   ear.add(innerEar);
 
@@ -131,11 +132,13 @@ export function createLowPolyElephant() {
   const earInner = createMaterial(0xaa9088, {
     emissive: 0x5e4e49,
     emissiveIntensity: 0.02,
+    flatShading: false,
     side: THREE.DoubleSide,
   });
   const earOuter = createMaterial(0xd9c0b7, {
     emissive: 0x75635d,
     emissiveIntensity: 0.02,
+    flatShading: false,
     side: THREE.DoubleSide,
   });
   const footMaterial = createMaterial(0xe4cec5, {
@@ -353,7 +356,7 @@ export function updateElephantAnimation(elephant, time) {
   const bob = Math.sin(time * 2.1) * 0.035;
   const headNod = Math.sin(time * 1.55 + 0.35) * 0.035;
   const trunkSwing = Math.sin(time * 1.7 - 0.15) * 0.1;
-  const earSwing = Math.sin(time * 1.8 + 0.65) * 0.045;
+  const earSwing = Math.sin(time * 0.9 + 0.65) * 0.022;
   const tailSwing = Math.sin(time * 2.2) * 0.16;
 
   animation.rig.position.y = animation.base.rigY + bob;
