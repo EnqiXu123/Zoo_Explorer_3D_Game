@@ -435,19 +435,46 @@ button {
   pointer-events: none;
 }
 
-.hero-bird,
+.hero-compass,
 .hero-butterfly {
   position: absolute;
   z-index: 4;
-  filter: drop-shadow(0 6px 10px rgba(48, 74, 44, 0.16));
   pointer-events: none;
 }
 
-.hero-bird {
-  right: 10%;
-  top: 18%;
-  font-size: 1.65rem;
-  animation: birdDrift 5.4s ease-in-out infinite;
+.hero-compass {
+  right: max(0.65rem, 3%);
+  top: 2.2%;
+  display: grid;
+  place-items: center;
+  width: 5.4rem;
+  height: 4.2rem;
+}
+
+.hero-compass::before {
+  content: "";
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 50%;
+  border: 2px solid rgba(123, 82, 39, 0.42);
+  background:
+    linear-gradient(rgba(112, 80, 49, 0.2), rgba(112, 80, 49, 0.2)) center / 0.12rem 62% no-repeat,
+    linear-gradient(90deg, rgba(112, 80, 49, 0.2), rgba(112, 80, 49, 0.2)) center / 62% 0.12rem no-repeat,
+    radial-gradient(circle, rgba(255, 252, 242, 0.98) 0 44%, rgba(242, 221, 170, 0.96) 45% 68%, rgba(171, 118, 59, 0.94) 69% 100%);
+  box-shadow:
+    0 0 0 0.28rem rgba(255, 241, 176, 0.48),
+    0 0 22px rgba(255, 216, 122, 0.34),
+    0 10px 16px rgba(80, 55, 30, 0.14);
+}
+
+.hero-compass::after {
+  content: "";
+  position: absolute;
+  width: 1rem;
+  height: 2.25rem;
+  background: linear-gradient(180deg, #ff8f5f 0 50%, #2f6d73 50% 100%);
+  clip-path: polygon(50% 0, 88% 50%, 50% 100%, 12% 50%);
+  box-shadow: 0 0 10px rgba(255, 245, 205, 0.25);
 }
 
 .hero-butterfly {
@@ -1111,17 +1138,6 @@ button {
   }
 }
 
-@keyframes birdDrift {
-  0%,
-  100% {
-    transform: translateY(0) rotate(-2deg);
-  }
-
-  50% {
-    transform: translateY(-6px) rotate(3deg);
-  }
-}
-
 @keyframes butterflyHover {
   0%,
   100% {
@@ -1283,10 +1299,21 @@ button {
     height: 2.8rem;
   }
 
-  .hero-bird {
-    right: 4%;
-    top: 10%;
-    font-size: 1.4rem;
+  .hero-compass {
+    right: 1.5%;
+    top: 3.5%;
+    width: 4.7rem;
+    height: 3.7rem;
+  }
+
+  .hero-compass::before {
+    width: 3.1rem;
+    height: 3.1rem;
+  }
+
+  .hero-compass::after {
+    width: 0.85rem;
+    height: 1.95rem;
   }
 
   .hero-butterfly {
@@ -1499,9 +1526,30 @@ button {
     height: 2.4rem;
   }
 
-  .hero-bird,
+  .hero-compass,
   .hero-butterfly {
-    filter: drop-shadow(0 6px 10px rgba(48, 74, 44, 0.16));
+    filter: none;
+  }
+
+  .hero-compass {
+    right: -1%;
+    top: 4%;
+    width: 3.95rem;
+    height: 3.1rem;
+  }
+
+  .hero-compass::before {
+    width: 2.55rem;
+    height: 2.55rem;
+    box-shadow:
+      0 0 0 0.22rem rgba(255, 241, 176, 0.45),
+      0 0 18px rgba(255, 216, 122, 0.28),
+      0 8px 12px rgba(80, 55, 30, 0.12);
+  }
+
+  .hero-compass::after {
+    width: 0.72rem;
+    height: 1.65rem;
   }
 
   .hero-butterfly {
